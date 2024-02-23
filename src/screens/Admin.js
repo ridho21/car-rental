@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, View, ActivityIndicator } from 'react-native';
 import { Layout, Text, TextInput, TopNav, useTheme, themeColor } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
+import { getFirestore } from 'firebase/firestore';
 
 
 
@@ -74,6 +75,7 @@ export default function ({ navigation }) {
             </View>
 
             <View style={styles.container}>
+                
                 {/* <FlatList
                     data={[
                         { key: 'Devin' },

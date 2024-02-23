@@ -3,6 +3,7 @@ import { initializeApp, getApps } from "firebase/app";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {firebaseConfig} from "../firebase/Config"
 
 import { useTheme, themeColor } from "react-native-rapi-ui";
 import TabBarIcon from "../components/utils/TabBarIcon";
@@ -21,15 +22,15 @@ import { AuthContext } from "../provider/AuthProvider";
 import Admin from "../screens/Admin";
 
 // Better put your these secret keys in .env file
-const firebaseConfig = {
-  apiKey: "AIzaSyDsUeWrXemUoRkPEFcdvCBvrvrQXgCXS1U",
-  authDomain: "https://car-rental-39b9e.firebaseapp.com/__/auth/action?mode=action&oobCode=code",
-  databaseURL: "https://car-rental-39b9e-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "car-rental-39b9e",
-  storageBucket: "car-rental-39b9e.appspot.com",
-  messagingSenderId: "163939117791",
-  appId: "1:163939117791:android:f94dc42ce6e5b62962176a",
-};
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDsUeWrXemUoRkPEFcdvCBvrvrQXgCXS1U",
+//   authDomain: "https://car-rental-39b9e.firebaseapp.com/__/auth/action?mode=action&oobCode=code",
+//   databaseURL: "https://car-rental-39b9e-default-rtdb.asia-southeast1.firebasedatabase.app/",
+//   projectId: "car-rental-39b9e",
+//   storageBucket: "car-rental-39b9e.appspot.com",
+//   messagingSenderId: "163939117791",
+//   appId: "1:163939117791:android:f94dc42ce6e5b62962176a",
+// };
 
 if (getApps().length === 0) {
   initializeApp(firebaseConfig);
