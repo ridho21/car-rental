@@ -6,6 +6,7 @@ const AuthProvider = (props) => {
   const auth = getAuth();
   // user null = loading
   const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
 
   useEffect(() => {
     checkLogin();
@@ -15,8 +16,15 @@ const AuthProvider = (props) => {
     onAuthStateChanged(auth, (u) => {
       if (u) {
         setUser(true);
+        setAdmin(false);
+        // console.log(u.email);
         // getUserData();
-      } else {
+        if (u.email === "admin@gmail.com"){
+          setAdmin(true);
+          setUser('admin');
+        }
+      }
+      else {
         setUser(false);
         // setUserData(null);
       }
@@ -27,6 +35,7 @@ const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         user,
+        admin
       }}
     >
       {props.children}

@@ -24,6 +24,14 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "947753d8-f686-4afe-99a1-171c554cb630"
+      }
+    },
+    "android": {
+      "package": "com.ridho21.openbo"
+    }
   }
 }

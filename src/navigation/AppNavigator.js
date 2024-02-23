@@ -18,6 +18,7 @@ import Login from "../screens/auth/Login";
 import Register from "../screens/auth/Register";
 import ForgetPassword from "../screens/auth/ForgetPassword";
 import { AuthContext } from "../provider/AuthProvider";
+import Admin from "../screens/Admin";
 
 // Better put your these secret keys in .env file
 const firebaseConfig = {
@@ -120,11 +121,14 @@ const MainTabs = () => {
 export default () => {
   const auth = useContext(AuthContext);
   const user = auth.user;
+  const admin = auth.admin;
+  console.log(auth);
   return (
     <NavigationContainer>
       {user == null && <Loading />}
       {user == false && <Auth />}
       {user == true && <Main />}
+      {admin == true && <Admin/>}
     </NavigationContainer>
   );
 };

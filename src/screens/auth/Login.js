@@ -33,7 +33,7 @@ export default function ({ navigation }) {
       var errorMessage = error.message;
       // ...
       setLoading(false);
-      alert(errorMessage);
+      alert(errorCode);
     });
   }
 
