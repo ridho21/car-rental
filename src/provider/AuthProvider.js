@@ -16,15 +16,15 @@ const AuthProvider = (props) => {
     onAuthStateChanged(auth, (u) => {
       if (u) {
         setUser(true);
-        setAdmin(false);
         // console.log(u.email);
         // getUserData();
         if (u.email === "admin@gmail.com"){
-          setAdmin(true);
           setUser('admin');
+          setAdmin(true);
         }
       }
       else {
+        setAdmin(false);
         setUser(false);
         // setUserData(null);
       }

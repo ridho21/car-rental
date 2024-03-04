@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Linking } from "react-native";
-import { getAuth, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import {
   Layout,
   Button,
@@ -12,27 +12,37 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
+import { FIREBASE_AUTH } from '../firebase/Config'
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
-  const auth = getAuth();
   return (
     <Layout>
       <TopNav
         middleContent="Home"
-        rightContent={
+        leftContent={
           <Ionicons
             name={isDarkmode ? "sunny" : "moon"}
             size={20}
             color={isDarkmode ? themeColor.white100 : themeColor.dark}
           />
         }
-        rightAction={() => {
+        rightContent={
+          <Ionicons
+            name="log-out-outline"
+            size={25}
+            color={isDarkmode ? themeColor.white100 : themeColor.dark}
+          />
+        }
+        leftAction={() => {
           if (isDarkmode) {
             setTheme("light");
           } else {
             setTheme("dark");
           }
+        }}
+        rightAction={() => {
+          signOut(FIREBASE_AUTH);
         }}
       />
       <View
@@ -48,12 +58,6 @@ export default function ({ navigation }) {
               These UI components provided by Rapi UI
             </Text>
             <Button
-              style={{ marginTop: 10 }}
-              text="Rapi UI Documentation"
-              status="info"
-              onPress={() => Linking.openURL("https://rapi-ui.kikiding.space/")}
-            />
-            <Button
               text="Go to second screen"
               onPress={() => {
                 navigation.navigate("SecondScreen");
@@ -66,7 +70,7 @@ export default function ({ navigation }) {
               status="danger"
               text="Logout"
               onPress={() => {
-                signOut(auth);
+                signOut(FIREBASE_AUTH);
               }}
               style={{
                 marginTop: 10,

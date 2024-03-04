@@ -3,7 +3,7 @@ import { initializeApp, getApps } from "firebase/app";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {firebaseConfig} from "../firebase/Config"
+import { firebaseConfig } from "../firebase/Config"
 
 import { useTheme, themeColor } from "react-native-rapi-ui";
 import TabBarIcon from "../components/utils/TabBarIcon";
@@ -19,7 +19,10 @@ import Login from "../screens/auth/Login";
 import Register from "../screens/auth/Register";
 import ForgetPassword from "../screens/auth/ForgetPassword";
 import { AuthContext } from "../provider/AuthProvider";
-import Admin from "../screens/Admin";
+//Admin Screen
+import Admin from "../screens/admin/Admin";
+import ViewCar from "../screens/admin/ViewCar";
+
 
 // Better put your these secret keys in .env file
 // const firebaseConfig = {
@@ -48,6 +51,20 @@ const Auth = () => {
       <AuthStack.Screen name="Register" component={Register} />
       <AuthStack.Screen name="ForgetPassword" component={ForgetPassword} />
     </AuthStack.Navigator>
+  );
+};
+
+const AdminStack = createNativeStackNavigator();
+const AdminScreen = () => {
+  return (
+    <AdminStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <AdminStack.Screen name="Admin Home" component={AdminTabs} />
+      {/* <AdminStack.Screen name="SecondScreen" component={SecondScreen} /> */}
+    </AdminStack.Navigator>
   );
 };
 
@@ -119,6 +136,48 @@ const MainTabs = () => {
   );
 };
 
+const adminTabs = createBottomTabNavigator();
+const AdminTabs = () => {
+  const { isDarkmode } = useTheme();
+  return (
+    <adminTabs.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          borderTopColor: isDarkmode ? themeColor.dark100 : "#c0c0c0",
+          backgroundColor: isDarkmode ? themeColor.dark200 : "#ffffff",
+        },
+      }}
+    >
+      {/* these icons using Ionicons */}
+      <adminTabs.Screen
+        name="Admin"
+        component={Admin}
+        options={{
+          tabBarLabel: ({ focused }) => (
+            <TabBarText focused={focused} title="Home" />
+          ),
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon={"home"} />
+          ),
+        }}
+      />
+      <adminTabs.Screen
+        name="View Car"
+        component={ViewCar}
+        options={{
+          tabBarLabel: ({ focused }) => (
+            <TabBarText focused={focused} title="View Car" />
+          ),
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon={"person"} />
+          ),
+        }}
+      />
+    </adminTabs.Navigator>
+  );
+};
+
 export default () => {
   const auth = useContext(AuthContext);
   const user = auth.user;
@@ -129,7 +188,7 @@ export default () => {
       {user == null && <Loading />}
       {user == false && <Auth />}
       {user == true && <Main />}
-      {admin == true && <Admin/>}
+      {admin == true && <AdminScreen />}
     </NavigationContainer>
   );
 };
