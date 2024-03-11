@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Platform, TouchableOpacity, FlatList, StyleSheet, View, ActivityIndicator, ScrollView, SafeAreaView } from 'react-native';
-import { Layout, Text, TextInput, TopNav, useTheme, themeColor, Button } from 'react-native-rapi-ui';
+import { Picker, Section, SectionContent, Layout, Text, TextInput, TopNav, useTheme, themeColor, Button } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { signOut } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { FIREBASE_AUTH, FIRESTORE_DB, FIREBASE_APP } from '../../firebase/Config';
 import * as ImagePicker from 'expo-image-picker';
 import 'react-native-get-random-values';
@@ -49,9 +49,16 @@ const styles = StyleSheet.create({
 export default function ({ navigation }) {
     const [carName, setCarName] = React.useState('');
     const [brand, setBrand] = React.useState('');
-    const [transmision, setTransmision] = React.useState('');
+    const [price, setPrice] = React.useState('');
+    const [seats, setSeats] = React.useState('');
+    const [transmision, setTransmision] = React.useState(null);
     const { isDarkmode, setTheme } = useTheme();
     const [image, setImage] = useState(null);
+    const items = [
+        { label: 'Manual', value: 'Manual' },
+        { label: 'Automatic', value: 'Automatic' }
+    ];
+    const isDisabled = !carName || !brand || !transmision || !price || !seats || !image;
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -71,23 +78,32 @@ export default function ({ navigation }) {
 
     const addCar = async () => {
         try {
-            uploadImageAsync(image)
-            const car = await addDoc(collection(FIRESTORE_DB, 'car-rental'), {
+            const url = await uploadImageAsync(image);
+            console.log(url);
+            const car = await addDoc(collection(FIRESTORE_DB, 'car-list'), {
                 car_name: carName,
                 brand: brand,
-                transmision: transmision
+                transmision: transmision,
+                price: parseInt(price),
+                seats: parseInt(seats),
+                image_url: url,
+                insert_at: serverTimestamp()
             });
             console.log('id', car.id);
         }
         catch (e) {
             console.log('error', e);
         }
-        // setUploading(false);
         alert(
             'Photo uploaded!',
             'Your photo has been uploaded to Firebase Cloud Storage!'
         );
         setImage(null);
+        setCarName(null);
+        setBrand(null);
+        setTransmision(null);
+        setPrice(null);
+        setSeats(null);
     }
 
     async function uploadImageAsync(uri) {
@@ -109,12 +125,13 @@ export default function ({ navigation }) {
 
         const fileRef = ref(getStorage(), "car-image/" + uuidv4());
         const result = await uploadBytes(fileRef, blob);
-        
+
         // We're done with the blob, close and release it
         blob.close();
         console.log(fileRef)
-
-        return await getDownloadURL(fileRef);
+        const url = await getDownloadURL(fileRef);
+        console.log(url);
+        return url
     }
     return (
         <Layout>
@@ -166,16 +183,25 @@ export default function ({ navigation }) {
                     // }
                     />
                     <Text style={{ marginBottom: 10, marginTop: 20 }}> Transmision:</Text>
-                    <TextInput
-                        placeholder="Manual / Automatic"
+                    <Picker
+                        items={items}
                         value={transmision}
-                        onChangeText={(val) => setTransmision(val)}
+                        placeholder="Chose Transmision"
+                        onValueChange={(val) => setTransmision(val)}
                     />
                     <Text style={{ marginBottom: 10, marginTop: 20 }}> Price:</Text>
                     <TextInput
-                        placeholder="Price"
-                        value={transmision}
-                        onChangeText={(val) => setTransmision(val)}
+                        placeholder="Rp.0"
+                        value={price}
+                        onChangeText={(val) => setPrice(val)}
+                        keyboardType='numeric'
+                    />
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Seats:</Text>
+                    <TextInput
+                        placeholder="0"
+                        value={seats}
+                        onChangeText={(val) => val <= 7 ? setSeats(val) : alert('seat cannot more than 7')}
+                        keyboardType='numeric'
                     />
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Button status="primary"
@@ -189,6 +215,7 @@ export default function ({ navigation }) {
                         text="Submit" outline
                         onPress={addCar}
                         style={styles.btn}
+                        disabled={isDisabled}
                     />
                 </View>
             </ScrollView>
