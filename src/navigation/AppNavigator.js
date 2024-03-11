@@ -11,7 +11,7 @@ import TabBarText from "../components/utils/TabBarText";
 //Screens
 import Home from "../screens/Home";
 import SecondScreen from "../screens/SecondScreen";
-import About from "../screens/About";
+import Orders from "../screens/Orders";
 import Profile from "../screens/Profile";
 import Loading from "../screens/utils/Loading";
 // Auth screens
@@ -20,7 +20,7 @@ import Register from "../screens/auth/Register";
 import ForgetPassword from "../screens/auth/ForgetPassword";
 import { AuthContext } from "../provider/AuthProvider";
 //Admin Screen
-import Admin from "../screens/admin/Admin";
+import AddCar from "../screens/admin/AddCar";
 import ViewCar from "../screens/admin/ViewCar";
 
 
@@ -109,6 +109,18 @@ const MainTabs = () => {
         }}
       />
       <Tabs.Screen
+        name="Orders"
+        component={Orders}
+        options={{
+          tabBarLabel: ({ focused }) => (
+            <TabBarText focused={focused} title="Orders" />
+          ),
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon={"car"}/>
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="Profile"
         component={Profile}
         options={{
@@ -116,19 +128,7 @@ const MainTabs = () => {
             <TabBarText focused={focused} title="Profile" />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"person"} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="About"
-        component={About}
-        options={{
-          tabBarLabel: ({ focused }) => (
-            <TabBarText focused={focused} title="About" />
-          ),
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"information-circle"} />
+            <TabBarIcon focused={focused} icon={"person-circle"} />
           ),
         }}
       />
@@ -151,8 +151,8 @@ const AdminTabs = () => {
     >
       {/* these icons using Ionicons */}
       <adminTabs.Screen
-        name="Admin"
-        component={Admin}
+        name="AddCar"
+        component={AddCar}
         options={{
           tabBarLabel: ({ focused }) => (
             <TabBarText focused={focused} title="Home" />
@@ -170,7 +170,7 @@ const AdminTabs = () => {
             <TabBarText focused={focused} title="View Car" />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"person"} />
+            <TabBarIcon focused={focused} icon={"car"} />
           ),
         }}
       />
