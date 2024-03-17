@@ -13,6 +13,22 @@ const styles = StyleSheet.create({
 		// alignItems: 'center',
 		justifyContent: 'center',
 	},
+	containerBtn: {
+		display: 'flex',
+		padding: 2,
+		flexDirection: 'row',
+	},
+	containerTxt: {
+		display: 'flex',
+		padding: 2,
+		flexDirection: 'column',
+		alignItems: 'left',
+	},
+	containerPrice: {
+		alignItems: 'center',
+		padding: 2,
+		// marginLeft: '70%'
+	},
 	card: {
 		flex: 0,
 		padding: 16,
@@ -23,13 +39,22 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 	},
 	btn: {
-		margin: 5
+		marginTop: 10,
+		margin: 2,
+		flex: 1
 	},
-	scrollView: {
-		flex: 1,
-		backgroundColor: 'pink',
-		alignItems: 'center',
-		justifyContent: 'center',
+	txt: {
+		// backgroundColor: 'green',
+		margin: 2,
+		flex: 1
+	},
+	title: {
+		fontSize: 25,
+		fontWeight: 'bold',
+	},
+	price: {
+		fontSize: 20,
+		fontWeight: 'bold',
 	}
 });
 
@@ -77,22 +102,33 @@ export default function ({ navigation }) {
 	const renderCarItem = ({ item }) => (
 		<View style={styles.card}>
 			<Image style={{ width: '100%', height: 200 }} source={{ uri: item.image_url }} />
-			<Text>{item.id}</Text>
-			<Text>{item.car_name}</Text>
-			<Text>{item.price}</Text>
-			<Text>{item.seats}</Text>
-			<Text>{item.transmision}</Text>
-			<Button
-				status="primary"
-				text="Update"
-				style={styles.btn}
-			/>
-			<Button
-				status="danger"
-				text="Delete"
-				style={styles.btn}
-				onPress={() => deleteDocument(item.id)}
-			/>
+			{/* <Text>{item.id}</Text> */}
+			<View style={{ alignItems: 'center', margin: 10 }}>
+				<Text style={styles.title}>{item.car_name}</Text>
+				<Text>{item.brand}</Text>
+			</View>
+			<View style={styles.containerTxt}>
+				<Text style={styles.txt}>Transmisi: {item.transmision}</Text>
+				<Text style={styles.txt}>Jumlah Bangku: {item.seats}</Text>
+			</View>
+			<View style={styles.containerPrice}>
+				<Text style={styles.price}>Rp.{item.price}/hari</Text>
+			</View>
+
+			<View style={styles.containerBtn}>
+				<Button
+					status="primary"
+					text="Update"
+					style={styles.btn}
+				/>
+				<Button
+					status="danger"
+					text="Delete"
+					style={styles.btn}
+					onPress={() => deleteDocument(item.id)}
+				/>
+			</View>
+
 		</View>
 	);
 	return (
@@ -130,6 +166,7 @@ export default function ({ navigation }) {
 				<FlatList
 					data={car}
 					renderItem={renderCarItem}
+					showsVerticalScrollIndicator={false}
 					keyExtractor={(item) => item.id}
 					refreshControl={
 						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

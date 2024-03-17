@@ -162,9 +162,9 @@ export default function ({ navigation }) {
                     signOut(FIREBASE_AUTH);
                 }}
             />
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.containerForm}>
-                    <Text style={{ marginBottom: 10, marginTop: 10 }}> Car Name :</Text>
+                    <Text style={{ marginBottom: 10, marginTop: 10 }}> Car Name </Text>
                     <TextInput
                         placeholder="Rush"
                         value={carName}
@@ -173,7 +173,7 @@ export default function ({ navigation }) {
                     //     <Ionicons name="lock-closed" size={20}/>
                     // }
                     />
-                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Brand:</Text>
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Brand</Text>
                     <TextInput
                         placeholder="Toyota"
                         value={brand}
@@ -182,21 +182,21 @@ export default function ({ navigation }) {
                     //     <Ionicons name="mail" size={20} />
                     // }
                     />
-                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Transmision:</Text>
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Transmision</Text>
                     <Picker
                         items={items}
                         value={transmision}
                         placeholder="Chose Transmision"
                         onValueChange={(val) => setTransmision(val)}
                     />
-                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Price:</Text>
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Price</Text>
                     <TextInput
                         placeholder="Rp.0"
                         value={price}
                         onChangeText={(val) => setPrice(val)}
                         keyboardType='numeric'
                     />
-                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Seats:</Text>
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Seats</Text>
                     <TextInput
                         placeholder="0"
                         value={seats}
