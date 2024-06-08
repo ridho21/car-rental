@@ -162,11 +162,12 @@ export default function ({ navigation }) {
 					middleContent=""
 					leftContent={
 						<Ionicons
-							name={isDarkmode ? "sunny" : "moon"}
-							size={20}
-							color={isDarkmode ? themeColor.white100 : themeColor.dark}
+						  name="chevron-back"
+						  size={20}
+						  color={isDarkmode ? themeColor.white100 : themeColor.dark}
 						/>
-					}
+					  }
+					  leftAction={() => navigation.goBack()}
 					rightContent={
 						<Ionicons
 							name="log-out-outline"
@@ -174,13 +175,6 @@ export default function ({ navigation }) {
 							color={isDarkmode ? themeColor.danger500 : themeColor.dark}
 						/>
 					}
-					leftAction={() => {
-						if (isDarkmode) {
-							setTheme("light");
-						} else {
-							setTheme("dark");
-						}
-					}}
 					rightAction={() => {
 						signOut(FIREBASE_AUTH);
 					}}

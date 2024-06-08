@@ -136,7 +136,12 @@ export default function ({ navigation }) {
     return (
         <Layout>
             <TopNav
-                middleContent="Add Car"
+                middleContent={
+                    <Image
+                        style={styles.logo}
+                        source={require('../../../assets/logo.png')}
+                    />
+                }
                 leftContent={
                     <Ionicons
                         name={isDarkmode ? "sunny" : "moon"}

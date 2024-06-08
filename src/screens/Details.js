@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import {
   Layout,
   TopNav,
@@ -9,12 +9,27 @@ import {
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 
+const styles = StyleSheet.create({
+  logo: {
+    width: 120,
+    height: 20,
+  },
+})
+
+
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
+
+
   return (
     <Layout>
       <TopNav
-        middleContent="Second Screen"
+        middleContent={
+          <Image
+            style={styles.logo}
+            source={require('../../assets/logo.png')}
+          />
+        }
         leftContent={
           <Ionicons
             name="chevron-back"
@@ -23,20 +38,20 @@ export default function ({ navigation }) {
           />
         }
         leftAction={() => navigation.goBack()}
-        rightContent={
-          <Ionicons
-            name={isDarkmode ? "sunny" : "moon"}
-            size={20}
-            color={isDarkmode ? themeColor.white100 : themeColor.dark}
-          />
-        }
-        rightAction={() => {
-          if (isDarkmode) {
-            setTheme("light");
-          } else {
-            setTheme("dark");
-          }
-        }}
+        // rightContent={
+        //   <Ionicons
+        //     name={isDarkmode ? "sunny" : "moon"}
+        //     size={20}
+        //     color={isDarkmode ? themeColor.white100 : themeColor.dark}
+        //   />
+        // }
+        // rightAction={() => {
+        //   if (isDarkmode) {
+        //     setTheme("light");
+        //   } else {
+        //     setTheme("dark");
+        //   }
+        // }}
       />
       <View
         style={{

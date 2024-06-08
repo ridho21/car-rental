@@ -10,7 +10,7 @@ import TabBarIcon from "../components/utils/TabBarIcon";
 import TabBarText from "../components/utils/TabBarText";
 //Screens
 import Home from "../screens/Home";
-import SecondScreen from "../screens/SecondScreen";
+import Details from "../screens/Details";
 import Orders from "../screens/Orders";
 import Profile from "../screens/Profile";
 import Loading from "../screens/utils/Loading";
@@ -63,7 +63,7 @@ const AdminScreen = () => {
       }}
     >
       <AdminStack.Screen name="Admin Home" component={AdminTabs} />
-      {/* <AdminStack.Screen name="SecondScreen" component={SecondScreen} /> */}
+      {/* <AdminStack.Screen name="Details" component={Details} /> */}
     </AdminStack.Navigator>
   );
 };
@@ -77,7 +77,7 @@ const Main = () => {
       }}
     >
       <MainStack.Screen name="MainTabs" component={MainTabs} />
-      <MainStack.Screen name="SecondScreen" component={SecondScreen} />
+      <MainStack.Screen name="Details" component={Details} />
     </MainStack.Navigator>
   );
 };

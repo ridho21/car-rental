@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "open-bo",
-    "slug": "open-bo",
+    "name": "rent-car",
+    "slug": "rent-car",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -29,7 +29,8 @@
         {
           "photosPermission": "Allow $(PRODUCT_NAME) to access your photos"
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "extra": {
       "eas": {
@@ -37,7 +38,7 @@
       }
     },
     "android": {
-      "package": "com.ridho21.openbo"
+      "package": "com.ridho21.rentcar"
     }
   }
 }

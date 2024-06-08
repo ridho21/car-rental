@@ -15,6 +15,8 @@ import {
   useTheme,
   themeColor,
 } from "react-native-rapi-ui";
+import { FIRESTORE_DB } from "../../firebase/Config";
+import { addDoc, collection } from "firebase/firestore";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
@@ -23,18 +25,37 @@ export default function ({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const addUser = async (user) => {
+    try {
+      const users = await addDoc(collection(FIRESTORE_DB, 'user'), {
+        id: user.currentUser.uid,
+        address: "",
+        phone: ""
+      });
+      console.log(users)
+    }
+    catch (err) {
+      alert(err)
+    }
+  }
+
   async function register() {
     setLoading(true);
+    var errorMsg;
     await createUserWithEmailAndPassword(auth, email, password).catch(function (
       error
     ) {
       // Handle Errors here.
       var errorCode = error.code;
-      var errorMessage = error.message;
+      errorMsg = error.message;
       // ...
       setLoading(false);
-      alert(errorMessage);
+      alert(errorMsg);
+      // console.log(errorMsg);
     });
+    if (errorMsg == null) {
+      addUser(auth);
+    }
   }
 
   return (
