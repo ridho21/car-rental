@@ -120,10 +120,6 @@ export default function ({ navigation }) {
 					status="primary"
 					text="Update"
 					style={styles.btn}
-					onPress={() => {
-						item.isUpdate = true;
-						navigation.navigate("AddCar", item)
-					}}
 				/>
 				<Button
 					status="danger"

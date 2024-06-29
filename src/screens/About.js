@@ -74,22 +74,7 @@ export default function ({ navigation, route }) {
         }}
       >
         {/* This text using ubuntu font */}
-        <Image style={{ width: '98%', height: 280}} source={{ uri: car.image_url }} />
-        <Text fontWeight="bold" style={{ fontSize: 25, marginTop: 20 }}>{car.stock > 0 ? "Tersedia" : "Tidak Tersedia"}</Text>
-        <View style={{ alignItems: 'center', backgroundColor: 'black', width: '100%', height: '50%', borderTopEndRadius: 20, borderTopStartRadius: 20, marginTop: 60 }}>
-          <Text fontWeight="bold" style={{ alignItems: 'center', color: 'white' }}>{car.brand}</Text>
-          <Text fontWeight="bold" style={{ alignItems: 'center', color: 'white' }}>{car.description}</Text>
-        </View>
-        <View style={{alignItems:'center', position: 'absolute', top: 600, backgroundColor: 'grey', width: '100%', height: '20%', borderTopEndRadius: 20, borderTopStartRadius: 20 }}>
-          <Text style={{ color: 'white', marginTop: '5%'}}>{car.price}</Text>         
-          <Button
-            style={{alignItems: 'center', marginTop: '10%'}}
-            disabled={car.stock > 0 ? false : true}
-            status="primary"
-            text="Booking Now"
-            onPress={() => handleItemPress()}
-            />
-        </View>
+        <Text>TES</Text>
       </View>
     </Layout>
   );

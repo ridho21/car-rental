@@ -154,13 +154,6 @@ export default function ({ navigation }) {
   const [refreshing, setRefreshing] = React.useState(false);
   const auth = getAuth();
 
-  const data = [
-    { id: '1', text: 'Elemen 1' },
-    { id: '2', text: 'Elemen 2' },
-    { id: '3', text: 'Elemen 3' },
-    // Tambahkan lebih banyak elemen sesuai kebutuhan
-  ];
-
   const fetchPost = async () => {
     await getDocs(collection(FIRESTORE_DB, "car-list", ""))
       .then((querySnapshot) => {
@@ -173,7 +166,7 @@ export default function ({ navigation }) {
 
   const handleItemPress = (item) => {
     setDetail(item);
-    navigation.navigate("Details")
+    navigation.navigate("Details", item)
     // setModalVisible(true);
   };
 
@@ -328,6 +321,9 @@ export default function ({ navigation }) {
       <FlatList
         style={{ paddingTop: 5 }}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         ListHeaderComponent={
           <View>
             <View style={{ padding: 15 }}>
@@ -364,9 +360,7 @@ export default function ({ navigation }) {
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
                 // scrollEnabled={false}
-                refreshControl={
-                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
+                
               />
               <Modal
                 visible={modalVisible}

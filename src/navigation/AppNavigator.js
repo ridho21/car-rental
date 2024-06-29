@@ -12,7 +12,9 @@ import TabBarText from "../components/utils/TabBarText";
 import Home from "../screens/Home";
 import Details from "../screens/Details";
 import Orders from "../screens/Orders";
+import About from "../screens/About";
 import Profile from "../screens/Profile";
+import Booking from "../screens/Booking";
 import Loading from "../screens/utils/Loading";
 // Auth screens
 import Login from "../screens/auth/Login";
@@ -22,6 +24,7 @@ import { AuthContext } from "../provider/AuthProvider";
 //Admin Screen
 import AddCar from "../screens/admin/AddCar";
 import ViewCar from "../screens/admin/ViewCar";
+import Transactions from "../screens/admin/Transactions";
 
 
 // Better put your these secret keys in .env file
@@ -77,7 +80,9 @@ const Main = () => {
       }}
     >
       <MainStack.Screen name="MainTabs" component={MainTabs} />
+      <MainStack.Screen name="Profile" component={Profile} />
       <MainStack.Screen name="Details" component={Details} />
+      <MainStack.Screen name="Booking" component={Booking} />
     </MainStack.Navigator>
   );
 };
@@ -104,7 +109,7 @@ const MainTabs = () => {
             <TabBarText focused={focused} title="Home" />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"home"} />
+            <TabBarIcon focused={focused} icon={"home-outline"} />
           ),
         }}
       />
@@ -116,19 +121,19 @@ const MainTabs = () => {
             <TabBarText focused={focused} title="Orders" />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"car"}/>
+            <TabBarIcon focused={focused} icon={"car-outline"}/>
           ),
         }}
       />
       <Tabs.Screen
-        name="Profile"
-        component={Profile}
+        name="About"
+        component={About}
         options={{
           tabBarLabel: ({ focused }) => (
-            <TabBarText focused={focused} title="Profile" />
+            <TabBarText focused={focused} title="About" />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"person-circle"} />
+            <TabBarIcon focused={focused} icon={"alert-circle-outline"} />
           ),
         }}
       />
@@ -158,7 +163,7 @@ const AdminTabs = () => {
             <TabBarText focused={focused} title="Home" />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"home"} />
+            <TabBarIcon focused={focused} icon={"home-outline"} />
           ),
         }}
       />
@@ -170,7 +175,19 @@ const AdminTabs = () => {
             <TabBarText focused={focused} title="View Car" />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"car"} />
+            <TabBarIcon focused={focused} icon={"car-outline"} />
+          ),
+        }}
+      />
+      <adminTabs.Screen
+        name="Transactions"
+        component={Transactions}
+        options={{
+          tabBarLabel: ({ focused }) => (
+            <TabBarText focused={focused} title="Transactions" />
+          ),
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon={"receipt-outline"} />
           ),
         }}
       />

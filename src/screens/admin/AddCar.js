@@ -3,7 +3,7 @@ import { Image, Platform, TouchableOpacity, FlatList, StyleSheet, View, Activity
 import { Picker, Section, SectionContent, Layout, Text, TextInput, TopNav, useTheme, themeColor, Button } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { signOut } from "firebase/auth";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, updateDoc, collection, serverTimestamp, doc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIRESTORE_DB, FIREBASE_APP } from '../../firebase/Config';
 import * as ImagePicker from 'expo-image-picker';
 import 'react-native-get-random-values';
@@ -46,9 +46,15 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function ({ navigation }) {
+export default function ({ navigation, route }) {
     const [carName, setCarName] = React.useState('');
     const [brand, setBrand] = React.useState('');
+    const [category, setCategory] = React.useState('');
+    const [speed, setSpeed] = React.useState('');
+    const [maxFuel, setMaxFuel] = React.useState('');
+    const [desc, setDesc] = React.useState('');
+    const [stock, setStock] = React.useState('');
+    const [year, setYear] = React.useState();
     const [price, setPrice] = React.useState('');
     const [seats, setSeats] = React.useState('');
     const [transmision, setTransmision] = React.useState(null);
@@ -58,6 +64,7 @@ export default function ({ navigation }) {
         { label: 'Manual', value: 'Manual' },
         { label: 'Automatic', value: 'Automatic' }
     ];
+    const [isUpdate, setIsUpdate] = React.useState(false);
     const isDisabled = !carName || !brand || !transmision || !price || !seats || !image;
 
     const pickImage = async () => {
@@ -76,16 +83,154 @@ export default function ({ navigation }) {
         }
     };
 
+    // route.params == null ? isUpdate = false : isUpdate = true;
+
+    React.useEffect(() => {
+        if (route.params?.image_url) {
+            setImage(route.params.image_url);
+            setCarName(route.params.car_name);
+            setCategory(route.params.category)
+            setBrand(route.params.brand);
+            setYear(String(route.params.car_year));
+            setSpeed(String(route.params.top_speed));
+            setMaxFuel(String(route.params.max_fuel));
+            setStock(String(route.params.stock));
+            setDesc(route.params.description);
+            setTransmision(route.params.transmision);
+            setPrice(String(route.params.price));
+            setSeats(String(route.params.seats));
+            setIsUpdate(true);
+        }
+    }, [route.params?.image_url]);
+
+    const carHandler = async () => {
+        if (isUpdate) {
+            try {
+                const url = await uploadImageAsync(image);
+                const docRef = doc(FIRESTORE_DB, 'car-list', route.params.id);
+                const car = await updateDoc(docRef, {
+                    car_name: carName,
+                    category: category,
+                    brand: brand,
+                    car_year: parseInt(year),
+                    top_speed: parseInt(speed),
+                    max_fuel: parseInt(maxFuel),
+                    transmision: transmision,
+                    price: parseInt(price),
+                    seats: parseInt(seats),
+                    stock: parseInt(stock),
+                    description: desc,
+                    image_url: url,
+                    insert_at: serverTimestamp()
+                });
+                console.log(car);
+            }
+            catch (e) {
+                console.log(e)
+            }
+            alert(
+                'Update Success'
+            );
+            setImage(null);
+            setCarName(null);
+            setCategory(null);
+            setBrand(null);
+            setYear(null);
+            setSpeed(null);
+            setMaxFuel(null);
+            setStock(null);
+            setDesc(null);
+            setTransmision(null);
+            setPrice(null);
+            setSeats(null);
+            setIsUpdate(false);
+        }
+        else {
+            try {
+                const url = await uploadImageAsync(image);
+                console.log(url);
+                const car = await addDoc(collection(FIRESTORE_DB, 'car-list'), {
+                    car_name: carName,
+                    category: category,
+                    brand: brand,
+                    car_year: parseInt(year),
+                    top_speed: parseInt(speed),
+                    max_fuel: parseInt(maxFuel),
+                    transmision: transmision,
+                    price: parseInt(price),
+                    seats: parseInt(seats),
+                    stock: parseInt(stock),
+                    description: desc,
+                    image_url: url,
+                    insert_at: serverTimestamp()
+                });
+                console.log('id', car.id);
+            }
+            catch (e) {
+                console.log('error', e);
+            }
+            alert(
+                'Submit Success'
+            );
+            setImage(null);
+            setCarName(null);
+            setCategory(null);
+            setBrand(null);
+            setYear(null);
+            setSpeed(null);
+            setMaxFuel(null);
+            setStock(null);
+            setDesc(null);
+            setTransmision(null);
+            setPrice(null);
+            setSeats(null);
+        }
+    }
+
+    const updateCar = async () => {
+        try {
+            const url = await uploadImageAsync(image);
+            const car = await updateDoc(collection(FIRESTORE_DB, 'car-list', route.params.id), {
+                car_name: carName,
+                category: category,
+                brand: brand,
+                car_year: parseInt(year),
+                top_speed: parseInt(speed),
+                max_fuel: parseInt(maxFuel),
+                transmision: transmision,
+                price: parseInt(price),
+                seats: parseInt(seats),
+                stock: parseInt(stock),
+                description: desc,
+                image_url: url,
+                insert_at: serverTimestamp()
+            });
+            console.log(car);
+        }
+        catch (e) {
+            console.log(e)
+        }
+        alert(
+            'Update Success'
+        );
+    }
+
     const addCar = async () => {
         try {
             const url = await uploadImageAsync(image);
             console.log(url);
             const car = await addDoc(collection(FIRESTORE_DB, 'car-list'), {
                 car_name: carName,
+                category: category,
                 brand: brand,
+                car_year: parseInt(year),
+                top_speed: parseInt(speed),
+                max_fuel: parseInt(maxFuel),
                 transmision: transmision,
                 price: parseInt(price),
                 seats: parseInt(seats),
+                stock: parseInt(stock),
+                description: desc,
                 image_url: url,
                 insert_at: serverTimestamp()
             });
@@ -95,12 +240,17 @@ export default function ({ navigation }) {
             console.log('error', e);
         }
         alert(
-            'Photo uploaded!',
-            'Your photo has been uploaded to Firebase Cloud Storage!'
+            'Submit Success'
         );
         setImage(null);
         setCarName(null);
+        setCategory(null);
         setBrand(null);
+        setYear(null);
+        setSpeed(null);
+        setMaxFuel(null);
+        setStock(null);
+        setDesc(null);
         setTransmision(null);
         setPrice(null);
         setSeats(null);
@@ -178,6 +328,15 @@ export default function ({ navigation }) {
                     //     <Ionicons name="lock-closed" size={20}/>
                     // }
                     />
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Category</Text>
+                    <TextInput
+                        placeholder="SUV"
+                        value={category}
+                        onChangeText={(val) => setCategory(val)}
+                    // rightContent={
+                    //     <Ionicons name="mail" size={20} />
+                    // }
+                    />
                     <Text style={{ marginBottom: 10, marginTop: 20 }}> Brand</Text>
                     <TextInput
                         placeholder="Toyota"
@@ -186,6 +345,27 @@ export default function ({ navigation }) {
                     // rightContent={
                     //     <Ionicons name="mail" size={20} />
                     // }
+                    />
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Year</Text>
+                    <TextInput
+                        placeholder="2000"
+                        value={year}
+                        onChangeText={(val) => setYear(val)}
+                        keyboardType='numeric'
+                    />
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Top Speed</Text>
+                    <TextInput
+                        placeholder="100"
+                        value={speed}
+                        onChangeText={(val) => setSpeed(val)}
+                        keyboardType='numeric'
+                    />
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Max Fuel</Text>
+                    <TextInput
+                        placeholder="100"
+                        value={maxFuel}
+                        onChangeText={(val) => setMaxFuel(val)}
+                        keyboardType='numeric'
                     />
                     <Text style={{ marginBottom: 10, marginTop: 20 }}> Transmision</Text>
                     <Picker
@@ -208,6 +388,21 @@ export default function ({ navigation }) {
                         onChangeText={(val) => val <= 7 ? setSeats(val) : alert('seat cannot more than 7')}
                         keyboardType='numeric'
                     />
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Stock</Text>
+                    <TextInput
+                        placeholder="0"
+                        value={stock}
+                        onChangeText={(val) => val < 0 ? alert('stock cannot less than 0') : setStock(val)}
+                        keyboardType='numeric'
+                    />
+                    <Text style={{ marginBottom: 10, marginTop: 20 }}> Description</Text>
+                    <TextInput
+                        multiline
+                        placeholder="Description"
+                        numberOfLines={4}
+                        value={desc}
+                        onChangeText={(val) => setDesc(val)}
+                    />
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Button status="primary"
                             text="Upload Image"
@@ -218,7 +413,7 @@ export default function ({ navigation }) {
                     <Button
                         status="success"
                         text="Submit" outline
-                        onPress={addCar}
+                        onPress={carHandler}
                         style={styles.btn}
                         disabled={isDisabled}
                     />
