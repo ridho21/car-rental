@@ -11,7 +11,6 @@ import { getApps, initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as Clipboard from "expo-clipboard";
 import { v4 as uuidv4 } from "uuid";
-import storage from '@react-native-firebase/storage';
 
 const styles = StyleSheet.create({
 	containerBtn: {
@@ -24,7 +23,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 	},
 	btn: {
-		margin:30,
+		margin: 30,
 		flex: 1
 	},
 	item: {
@@ -162,12 +161,12 @@ export default function ({ navigation }) {
 					middleContent=""
 					leftContent={
 						<Ionicons
-						  name="chevron-back"
-						  size={20}
-						  color={isDarkmode ? themeColor.white100 : themeColor.dark}
+							name="chevron-back"
+							size={20}
+							color={isDarkmode ? themeColor.white100 : themeColor.dark}
 						/>
-					  }
-					  leftAction={() => navigation.goBack()}
+					}
+					leftAction={() => navigation.goBack()}
 					rightContent={
 						<Ionicons
 							name="log-out-outline"
@@ -187,7 +186,7 @@ export default function ({ navigation }) {
 						text="Upload Image"
 						size='sm'
 						onPress={pickImage}
-						style={{margin: 5}} />
+						style={{ margin: 5 }} />
 				</View>
 				<View style={styles.containerForm}>
 					<Text style={{ marginTop: 5 }}></Text>

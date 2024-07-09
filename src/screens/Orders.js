@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { View, StyleSheet, FlatList, RefreshControl, Image, TouchableOpacity, Modal } from 'react-native';
 import { Layout, Text, Button } from 'react-native-rapi-ui';
 import { FIRESTORE_DB } from '../firebase/Config';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { signOut, updateProfile, updatePhoneNumber, getAuth, updateEmail } from "firebase/auth";
+import { collection, getDocs, deleteDoc, doc, where, query } from 'firebase/firestore';
 
 const styles = StyleSheet.create({
 	container: {
@@ -46,9 +47,15 @@ const styles = StyleSheet.create({
 		margin: 2,
 		flex: 1
 	},
-	title: {
+	titlePaid: {
 		fontSize: 25,
 		fontWeight: 'bold',
+		color: 'green'
+	},
+	titleUnpaid: {
+		fontSize: 25,
+		fontWeight: 'bold',
+		color: 'red'
 	},
 	price: {
 		fontSize: 20,
@@ -77,20 +84,25 @@ const styles = StyleSheet.create({
 })
 
 export default function ({ navigation }) {
+	const [order, setOrder] = React.useState([]);
 	const [car, setCar] = React.useState([]);
 	const [detail, setDetail] = React.useState([]);
 	const [modalVisible, setModalVisible] = React.useState(false);
 	const [refreshing, setRefreshing] = React.useState(false);
+	const auth = getAuth();
 
 	const fetchPost = async () => {
-		await getDocs(collection(FIRESTORE_DB, "car-list", ""))
+		const ref = collection(FIRESTORE_DB, 'order');
+		const q = query(ref, where('user_id', '==', auth.currentUser.uid))
+		// const querySnapshot = await getDocs(q)
+		await getDocs(q)
 			.then((querySnapshot) => {
 				const newData = querySnapshot.docs
 					.map((doc) => ({ id: doc.id, ...doc.data() }));
-				setCar(newData);
-				// console.log(newData);
+				setOrder(newData);
 			});
-	}
+	};
+
 
 	const handleItemPress = (item) => {
 		setDetail(item);
@@ -113,7 +125,7 @@ export default function ({ navigation }) {
 
 	useEffect(() => {
 		fetchPost();
-		console.log(car);
+		console.log(order);
 	}, []);
 
 	const onRefresh = React.useCallback(() => {
@@ -127,11 +139,10 @@ export default function ({ navigation }) {
 	const renderCarItem = ({ item }) => (
 		<TouchableOpacity onPress={() => handleItemPress(item)}>
 			<View style={styles.card}>
-				<Image style={{ width: '100%', height: 200 }} source={{ uri: item.image_url }} />
+				<Image style={{ width: '100%', height: 200 }} source={{ uri: item.img }} />
 				{/* <Text>{item.id}</Text> */}
 				<View style={{ alignItems: 'center', margin: 10 }}>
-					<Text style={styles.title}>{item.car_name}</Text>
-					<Text>{item.brand}</Text>
+					<Text style={item.status == 'UNPAID' ? styles.titleUnpaid : styles.titlePaid}>{item.status}</Text>
 				</View>
 				<View style={styles.containerTxt}>
 					<Text style={styles.txt}>Transmisi: {item.transmision}</Text>
@@ -162,7 +173,7 @@ export default function ({ navigation }) {
 		<Layout>
 			<View style={styles.container}>
 				<FlatList
-					data={car}
+					data={order}
 					renderItem={renderCarItem}
 					keyExtractor={(item) => item.id}
 					showsVerticalScrollIndicator={false}

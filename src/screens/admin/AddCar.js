@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Platform, TouchableOpacity, FlatList, StyleSheet, View, ActivityIndicator, ScrollView, SafeAreaView } from 'react-native';
-import { Picker, Section, SectionContent, Layout, Text, TextInput, TopNav, useTheme, themeColor, Button } from 'react-native-rapi-ui';
+import { Picker, Section, Layout, Text, TextInput, TopNav, useTheme, themeColor, Button } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { signOut } from "firebase/auth";
 import { addDoc, updateDoc, collection, serverTimestamp, doc } from "firebase/firestore";
@@ -11,7 +11,7 @@ import { getApps, initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as Clipboard from "expo-clipboard";
 import { v4 as uuidv4 } from "uuid";
-import storage from '@react-native-firebase/storage';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 // import * as ImagePicker from 'react-native-image-picker';
 // import * as Progress from 'react-native-progress';
 
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
 
 export default function ({ navigation, route }) {
     const [carName, setCarName] = React.useState('');
+    const [recomended, setRecomended] = React.useState(true);
     const [brand, setBrand] = React.useState('');
     const [category, setCategory] = React.useState('');
     const [speed, setSpeed] = React.useState('');
@@ -121,7 +122,8 @@ export default function ({ navigation, route }) {
                     stock: parseInt(stock),
                     description: desc,
                     image_url: url,
-                    insert_at: serverTimestamp()
+                    insert_at: serverTimestamp(),
+                    recomended: recomended
                 });
                 console.log(car);
             }
@@ -143,6 +145,7 @@ export default function ({ navigation, route }) {
             setTransmision(null);
             setPrice(null);
             setSeats(null);
+            setRecomended(false);
             setIsUpdate(false);
         }
         else {
@@ -162,7 +165,8 @@ export default function ({ navigation, route }) {
                     stock: parseInt(stock),
                     description: desc,
                     image_url: url,
-                    insert_at: serverTimestamp()
+                    insert_at: serverTimestamp(),
+                    recomended: recomended
                 });
                 console.log('id', car.id);
             }
@@ -184,6 +188,7 @@ export default function ({ navigation, route }) {
             setTransmision(null);
             setPrice(null);
             setSeats(null);
+            setRecomended(false);
         }
     }
 
@@ -394,6 +399,18 @@ export default function ({ navigation, route }) {
                         value={stock}
                         onChangeText={(val) => val < 0 ? alert('stock cannot less than 0') : setStock(val)}
                         keyboardType='numeric'
+                    />
+                    <BouncyCheckbox
+                        size={25}
+                        style={{ marginLeft: 10, marginBottom: 10, marginTop: 20}}
+                        fillColor="green"
+                        unFillColor="#FFFFFF"
+                        text="Recommended"
+                        textStyle={{textDecorationLine: "none"}}
+                        iconStyle={{ borderColor: "red" }}
+                        innerIconStyle={{ borderWidth: 2 }}
+                        isChecked
+                        onPress={(isChecked) => {setRecomended(isChecked)}}
                     />
                     <Text style={{ marginBottom: 10, marginTop: 20 }}> Description</Text>
                     <TextInput

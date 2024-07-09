@@ -27,7 +27,7 @@ export default function ({ navigation, route }) {
   console.log(car);
 
   const handleItemPress = (item) => {
-    navigation.navigate("Booking")
+    navigation.navigate("Booking", item)
     // setModalVisible(true);
   };
 
@@ -87,7 +87,7 @@ export default function ({ navigation, route }) {
             disabled={car.stock > 0 ? false : true}
             status="primary"
             text="Booking Now"
-            onPress={() => handleItemPress()}
+            onPress={() => handleItemPress(car)}
             />
         </View>
       </View>

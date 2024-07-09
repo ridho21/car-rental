@@ -14,7 +14,7 @@ import {
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import { FIRESTORE_DB, FIREBASE_AUTH } from '../firebase/Config';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, getDoc, deleteDoc, doc, query, where, or } from 'firebase/firestore';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Lato_400Regular, Lato_400Regular_Italic } from "@expo-google-fonts/lato";
 import * as Font from 'expo-font';
@@ -149,6 +149,7 @@ export default function ({ navigation }) {
   const [search, setSearch] = React.useState('');
   const [image, setImage] = React.useState(null);
   const [car, setCar] = React.useState([]);
+  const [recomended, setRecomended] = React.useState([]);
   const [detail, setDetail] = React.useState([]);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
@@ -162,6 +163,42 @@ export default function ({ navigation }) {
         setCar(newData);
         // console.log(newData);
       });
+  };
+
+  const fetchRecomended = async () => {
+    // const snap = await getDoc(doc(FIRESTORE_DB, "car-list", "B26rb1ZopvY0YQTox8Bi", ""))
+    const ref = collection(FIRESTORE_DB, "car-list");
+    const q = query(ref, where("recomended", "==", true))
+    const snap = await getDocs(q);
+    const item = [];
+      snap.forEach((doc) => {
+        item.push({ id: doc.id, ...doc.data()});
+        console.log(doc.id, " => ", doc.data());
+      });
+      setRecomended(item);
+    };
+
+  const fetchData = async () => {
+    // const snap = await getDoc(doc(FIRESTORE_DB, "car-list", "B26rb1ZopvY0YQTox8Bi", ""))
+    const ref = collection(FIRESTORE_DB, "car-list");
+    const q = query(ref, where("car_name", ">=", search), where("car_name", "<=", search + '\uf8ff'))
+    const snap = await getDocs(q);
+    const item = [];
+    if (search.length > 0){
+      snap.forEach((doc) => {
+        item.push({ id: doc.id, ...doc.data()});
+        console.log(doc.id, " => ", doc.data());
+      });
+      setCar(item);
+    } else {
+      fetchPost();
+    }
+    
+    // if (snap.exists()){
+    //   console.log("data", snap.data())
+    // } else {
+    //   console.log("no data")
+    // }
   };
 
   const handleItemPress = (item) => {
@@ -286,9 +323,27 @@ export default function ({ navigation }) {
 
   useEffect(() => {
     fetchPost();
+    fetchRecomended();
+    fetchData();
     setImage(auth.currentUser.photoURL);
-    console.log(car);
-  }, []);
+    // console.log(car);
+    // if (search.length > 0){
+    //   const unsubscribe =
+    //   collection(FIRESTORE_DB, 'car-list')
+    //   .where('car_name', '>=', search)
+    //   .where('car_name', '<=', search + '\uf8ff')
+    //   .onSnapshot(querySnapshot => {
+    //     const items = [];
+    //     querySnapshot.forEach(doc => {
+    //       items.push({ id: doc, ...doc.data()});
+    //     });
+    //     setCar(items);
+    //   });
+    //   return () => unsubscribe();
+    // } else {
+    //   setCar([]);
+    // }
+  }, [search]);
 
   return (
     <Layout>
@@ -337,7 +392,7 @@ export default function ({ navigation }) {
               />
             </View>
             <Text style={{ marginLeft: 20, fontFamily: 'CustomFont'}}>Recomended :</Text>
-            <FlatList data={car}
+            <FlatList data={recomended}
               renderItem={renderCarItemHorizontal}
               keyExtractor={(item) => item.id}
               horizontal={true}
