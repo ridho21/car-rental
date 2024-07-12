@@ -125,6 +125,7 @@ export default function ({ navigation }) {
               onChangeText={(text) => setPassword(text)}
             />
             <Button
+            status="dark100"
               text={loading ? "Loading" : "Create an account"}
               onPress={() => {
                 register();

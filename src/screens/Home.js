@@ -14,7 +14,7 @@ import {
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import { FIRESTORE_DB, FIREBASE_AUTH } from '../firebase/Config';
-import { collection, getDocs, getDoc, deleteDoc, doc, query, where, or } from 'firebase/firestore';
+import { collection, getDocs, getDocsFromCache, getDoc, deleteDoc, doc, query, where, or } from 'firebase/firestore';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Lato_400Regular, Lato_400Regular_Italic } from "@expo-google-fonts/lato";
 import * as Font from 'expo-font';
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     flex: 0,
     width: 300,
     height: 200,
-    padding: 16,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
     borderWidth: 1,
@@ -121,7 +121,31 @@ const styles = StyleSheet.create({
     height: 20,
   },
   containerBrand: {
-    marginTop:10,
+    marginTop: 10,
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  horizontalContainer: {
+    margin: 10,
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  horizontalContainer1: {
+    marginLeft: 10,
+    borderRadius: 8,
+    marginTop: 175,
+    // backgroundColor: 'white',
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  horizontalContainer2: {
+    marginLeft: 50,
+    borderRadius: 8,
+    marginTop: 155,
+    // backgroundColor: 'white',
+    position: 'absolute',
     display: 'flex',
     flexDirection: 'row'
   },
@@ -146,6 +170,7 @@ const styles = StyleSheet.create({
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
+  const [filter, setFilter] = React.useState('ALL');
   const [search, setSearch] = React.useState('');
   const [image, setImage] = React.useState(null);
   const [car, setCar] = React.useState([]);
@@ -156,13 +181,25 @@ export default function ({ navigation }) {
   const auth = getAuth();
 
   const fetchPost = async () => {
-    await getDocs(collection(FIRESTORE_DB, "car-list", ""))
-      .then((querySnapshot) => {
-        const newData = querySnapshot.docs
-          .map((doc) => ({ id: doc.id, ...doc.data() }));
-        setCar(newData);
-        // console.log(newData);
-      });
+    const ref = collection(FIRESTORE_DB, "car-list");
+    const snap = await getDocs(ref);
+    const item = [];
+    snap.forEach((doc) => {
+      item.push({ id: doc.id, ...doc.data() });
+    });
+    setCar(item);
+  };
+
+  const fetchCategory = async (i) => {
+    const ref = collection(FIRESTORE_DB, "car-list");
+    const q = query(ref, where("category", "==", i))
+    const snap = await getDocs(q);
+    const item = [];
+    snap.forEach((doc) => {
+      item.push({ id: doc.id, ...doc.data() });
+    });
+    setCar(item);
+    console.log(car)
   };
 
   const fetchRecomended = async () => {
@@ -171,12 +208,12 @@ export default function ({ navigation }) {
     const q = query(ref, where("recomended", "==", true))
     const snap = await getDocs(q);
     const item = [];
-      snap.forEach((doc) => {
-        item.push({ id: doc.id, ...doc.data()});
-        console.log(doc.id, " => ", doc.data());
-      });
-      setRecomended(item);
-    };
+    snap.forEach((doc) => {
+      item.push({ id: doc.id, ...doc.data() });
+      console.log(doc.id, " => ", doc.data());
+    });
+    setRecomended(item);
+  };
 
   const fetchData = async () => {
     // const snap = await getDoc(doc(FIRESTORE_DB, "car-list", "B26rb1ZopvY0YQTox8Bi", ""))
@@ -184,16 +221,16 @@ export default function ({ navigation }) {
     const q = query(ref, where("car_name", ">=", search), where("car_name", "<=", search + '\uf8ff'))
     const snap = await getDocs(q);
     const item = [];
-    if (search.length > 0){
+    if (search.length > 0) {
       snap.forEach((doc) => {
-        item.push({ id: doc.id, ...doc.data()});
+        item.push({ id: doc.id, ...doc.data() });
         console.log(doc.id, " => ", doc.data());
       });
       setCar(item);
     } else {
       fetchPost();
     }
-    
+
     // if (snap.exists()){
     //   console.log("data", snap.data())
     // } else {
@@ -213,7 +250,11 @@ export default function ({ navigation }) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    fetchPost();
+    if(filter == 'ALL'){
+      fetchPost();
+    } else {
+      fetchCategory(filter);
+    }
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -229,6 +270,8 @@ export default function ({ navigation }) {
         <View style={styles.containerBrand}>
           <Ionicons style={{ position: 'relative', marginRight: 4 }} name="people" size={15} color={'white'} />
           <Text style={{ color: 'white', fontSize: 15 }}>{item.seats}</Text>
+          <Ionicons style={{ marginLeft: 10 }} name="car-sport" size={15} color={'white'} />
+          <Text style={{ marginLeft: 5, color: 'white', fontSize: 15 }}>{item.stock}</Text>
         </View>
         <Image style={{ width: '100%', height: 200 }} source={{ uri: item.image_url }} />
         {/* <Text>{item.id}</Text> */}
@@ -240,7 +283,7 @@ export default function ({ navigation }) {
           <View style={{ marginTop: 5 }}>
             <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 10, padding: 10, marginTop: 10 }}>
               <Text>Rp.{formatCurrency(item.price)}/hari</Text>
-              <Ionicons style= {{marginLeft: 2}} name="chevron-forward-circle" size={18}/>
+              <Ionicons style={{ marginLeft: 2 }} name="chevron-forward-circle" size={18} />
             </View>
             {/* <Text style={styles.brand}>{item.brand}</Text> */}
           </View>
@@ -274,9 +317,26 @@ export default function ({ navigation }) {
   const renderCarItemHorizontal = ({ item }) => (
     <TouchableOpacity onPress={() => handleItemPress(item)}>
       <View style={styles.cardHorizontal}>
-        <Image style={{ width: '100%', height: 200 }} source={{ uri: item.image_url }} />
+        <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.image_url }} />
+        <View style={styles.horizontalContainer}>
+          <Text style={{ color: 'white', fontSize: 25, fontWeight: 'bold' }}>{item.car_name}</Text>
+          {/* <Text style={{ color: 'white', fontSize: 15, marginTop:20 }}>{item.stock}</Text> */}
+        </View>
+        <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 10, padding: 7, position: 'absolute', marginStart: 160, marginTop: 160 }}>
+          <Text>Rp.{formatCurrency(item.price)}/hari</Text>
+          <Ionicons style={{ marginLeft: 2 }} name="chevron-forward-circle" size={18} />
+        </View>
+        <View style={styles.horizontalContainer1}>
+          <Ionicons style={{ marginRight: 4 }} name="people" size={15} color={'white'} />
+          <Text style={{ color: 'white', fontSize: 15 }}>{item.seats}</Text>
+        </View>
+        <View style={styles.horizontalContainer2}>
+          <Ionicons style={{ marginRight: 4, marginTop: 20 }} name="car-sport" size={15} color={'white'} />
+          <Text style={{ color: 'white', fontSize: 15, marginTop: 20 }}>{item.stock}</Text>
+        </View>
+
         {/* <Text>{item.id}</Text> */}
-        <View style={styles.containerBrand}>
+        {/* <View style={styles.containerBrand}>
           <View style={{ alignContent: 'left' }}>
             <Text style={styles.carName}>{item.car_name}</Text>
             <Text style={styles.brand}>{item.brand}</Text>
@@ -285,9 +345,8 @@ export default function ({ navigation }) {
             <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 10, marginTop: 10 }}>
               <Text>Rp.500.000/hari</Text>
             </View>
-            {/* <Text style={styles.brand}>{item.brand}</Text> */}
           </View>
-        </View>
+        </View> */}
 
         {/* <View style={styles.containerTxt}>
           <Text style={styles.txt}>Transmisi: {item.transmision} size="sm"</Text>
@@ -326,6 +385,7 @@ export default function ({ navigation }) {
     fetchRecomended();
     fetchData();
     setImage(auth.currentUser.photoURL);
+    setFilter('ALL');
     // console.log(car);
     // if (search.length > 0){
     //   const unsubscribe =
@@ -391,7 +451,7 @@ export default function ({ navigation }) {
                 }
               />
             </View>
-            <Text style={{ marginLeft: 20, fontFamily: 'CustomFont'}}>Recomended :</Text>
+            <Text style={{ marginLeft: 20, fontFamily: 'CustomFont' }}>Recomended :</Text>
             <FlatList data={recomended}
               renderItem={renderCarItemHorizontal}
               keyExtractor={(item) => item.id}
@@ -403,10 +463,21 @@ export default function ({ navigation }) {
         // <View style={styles.container}>
         ListFooterComponent={
           <View style={styles.content}>
-            <View style={{display: 'flex', flexDirection: 'row', paddingLeft: 15}}>
-            <Button style={styles.button} size="sm" text="ALL"/>
-            <Button style={styles.button} size="sm" text="SUV"/>
-            <Button style={styles.button} size="sm" text="MPV"/>
+            <View style={{ display: 'flex', flexDirection: 'row', paddingLeft: 15 }}>
+              <Button onPress={() => {
+                setFilter('ALL')
+                fetchPost()
+              }} status={filter == 'ALL' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="ALL" />
+              <Button onPress={() => {
+                setFilter('SUV')
+                fetchCategory(filter)
+                // onRefresh()
+              }} status={filter == 'SUV' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="SUV" />
+              <Button onPress={() => {
+                setFilter('MPV')
+                fetchCategory(filter)
+                // onRefresh()
+              }} status={filter == 'MPV' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="MPV" />
             </View>
             <SafeAreaView style={{ flex: 0 }}>
               <FlatList
@@ -414,8 +485,8 @@ export default function ({ navigation }) {
                 renderItem={renderCarItem}
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
-                // scrollEnabled={false}
-                
+              // scrollEnabled={false}
+
               />
               <Modal
                 visible={modalVisible}

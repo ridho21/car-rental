@@ -4,7 +4,7 @@
     "slug": "rent-car",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -34,11 +34,15 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "947753d8-f686-4afe-99a1-171c554cb630"
+        "projectId": "de5814c2-6257-4126-9b20-969fcee65378"
       }
     },
     "android": {
-      "package": "com.ridho21.rentcar"
-    }
+      "package": "com.ridho21.rentcar",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "owner": "ridho21"
   }
 }

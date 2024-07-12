@@ -104,6 +104,7 @@ export default function ({ navigation }) {
               onChangeText={(text) => setPassword(text)}
             />
             <Button
+              status="dark100"
               text={loading ? "Loading" : "Continue"}
               onPress={() => {
                 login();

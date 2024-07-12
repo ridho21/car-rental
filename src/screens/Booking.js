@@ -81,11 +81,14 @@ export default function ({ navigation, route }) {
     const transactionHandler = async () => {
         if (car.stock <= 0) {
             alert("Stock 0")
+        } 
+        else if (pick.getDate() - drop.getDate() >= 0){
+            alert("Date not valid")
         } else {
             const transaction = await addDoc(collection(FIRESTORE_DB, 'order'), {
                 car_id: car.id,
                 user_id: auth.currentUser.uid,
-                price: car.price,
+                price: car.price * Math.abs((pick.getDate()-drop.getDate())),
                 img: car.image_url,
                 created_at: new Date(),
                 driver_option: driver,
@@ -106,11 +109,14 @@ export default function ({ navigation, route }) {
             console.log(car.stock)
 
             alert('Booking Success')
+            navigation.navigate("Orders")
         }
-        navigation.navigate("Orders")
     };
 
-    console.log(driver)
+    console.log(pick.getDate())
+    console.log(drop.getDate())
+    console.log(pick.getDate()-drop.getDate())
+    console.log(new Date())
 
     useEffect(() => {
     }, []);
@@ -176,7 +182,6 @@ export default function ({ navigation, route }) {
                             <Ionicons name="calendar-outline" size={20} />
                         }
                         onPress={showDatePicker2}
-
                     />
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible2}
@@ -216,7 +221,7 @@ export default function ({ navigation, route }) {
                         value={address}
                         onChangeText={(val) => setAddress(val)}
                     />
-                    <Button text="Confirm" disabled={isDisable} onPress={transactionHandler} style={{ marginTop: 30 }}></Button>
+                    <Button text="Confirm" status='dark100' disabled={isDisable} onPress={transactionHandler} style={{ marginTop: 30 }}></Button>
                 </View>
                 {/* This text using ubuntu font */}
                 {/* <Image style={{ width: '100%', height: 280 }} source={{ uri: car.image_url }} />

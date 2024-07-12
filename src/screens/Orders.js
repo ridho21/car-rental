@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, FlatList, RefreshControl, Image, TouchableOpacity, Modal } from 'react-native';
+import { Linking, View, StyleSheet, FlatList, RefreshControl, Image, TouchableOpacity, Modal } from 'react-native';
 import { Layout, Text, Button } from 'react-native-rapi-ui';
 import { FIRESTORE_DB } from '../firebase/Config';
 import { signOut, updateProfile, updatePhoneNumber, getAuth, updateEmail } from "firebase/auth";
-import { collection, getDocs, deleteDoc, doc, where, query } from 'firebase/firestore';
+import { collection, getDocs, getDoc, deleteDoc, doc, where, query, updateDoc } from 'firebase/firestore';
+import { fontSize } from 'react-native-rapi-ui/constants/typography';
 
 const styles = StyleSheet.create({
 	container: {
@@ -19,9 +20,9 @@ const styles = StyleSheet.create({
 	},
 	containerTxt: {
 		display: 'flex',
-		padding: 2,
-		flexDirection: 'column',
-		alignItems: 'left',
+		margin: 5,
+		backgroundColor: 'yellow',
+		flexDirection: 'row',
 	},
 	containerPrice: {
 		alignItems: 'center',
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
 	},
 	txt: {
 		// backgroundColor: 'green',
+		alignItems: 'center',
 		margin: 2,
 		flex: 1
 	},
@@ -78,6 +80,7 @@ const styles = StyleSheet.create({
 	modalContent: {
 		backgroundColor: 'white',
 		padding: 20,
+		margin: 20,
 		borderRadius: 8,
 		alignItems: 'center',
 	},
@@ -109,23 +112,33 @@ export default function ({ navigation }) {
 		setModalVisible(true);
 	};
 
+	const cancelBooking = async (orderId, carId) => {
+		try {
+			const docRef = doc(FIRESTORE_DB, 'order', orderId);
+			await deleteDoc(docRef);
+
+			const docRefCar = doc(FIRESTORE_DB, 'car-list', carId);
+
+			const carStock = await getDoc(docRefCar);
+			const updateStock = await updateDoc(docRefCar, {
+				stock: carStock.data().stock + 1
+			});
+
+			setModalVisible(false);
+			alert("Cancel Success")
+			onRefresh();
+		} catch (err) {
+			alert(err.message);
+		}
+	}
+
 	const closeModal = () => {
 		setModalVisible(false);
 	};
 
-	const getCarDetail = async (id) => {
-		await getDocs(collection(FIRESTORE_DB, "car-list", "JqSJTVhEQRoPegWAuSWY"))
-			.then((querySnapshot) => {
-				const newData = querySnapshot.docs
-					.map((doc) => ({ id: doc.id, ...doc.data() }));
-				setDetail(newData);
-				console.log(newData);
-			})
-	}
-
 	useEffect(() => {
 		fetchPost();
-		console.log(order);
+		console.log(detail);
 	}, []);
 
 	const onRefresh = React.useCallback(() => {
@@ -137,7 +150,7 @@ export default function ({ navigation }) {
 	}, []);
 
 	const renderCarItem = ({ item }) => (
-		<TouchableOpacity onPress={() => handleItemPress(item)}>
+		<TouchableOpacity>
 			<View style={styles.card}>
 				<Image style={{ width: '100%', height: 200 }} source={{ uri: item.img }} />
 				{/* <Text>{item.id}</Text> */}
@@ -145,13 +158,26 @@ export default function ({ navigation }) {
 					<Text style={item.status == 'UNPAID' ? styles.titleUnpaid : styles.titlePaid}>{item.status}</Text>
 				</View>
 				<View style={styles.containerTxt}>
-					<Text style={styles.txt}>Transmisi: {item.transmision}</Text>
-					<Text style={styles.txt}>Jumlah Bangku: {item.seats}</Text>
+					<Text style={styles.txt}>{new Date(item.pickup_date.seconds * 1000).toDateString()}</Text>
+					<Text style={styles.txt}>{new Date(item.dropoff_date.seconds * 1000).toDateString()}</Text>
 				</View>
 				<View style={styles.containerPrice}>
-					<Text style={styles.price}>Rp.{item.price}/hari</Text>
+					<Text style={styles.price}>Total bill: Rp.{item.price}</Text>
 				</View>
-
+				<View style={styles.containerBtn}>
+					<Button
+						status="dark100"
+						text="Contact Admin"
+						style={styles.btn}
+						onPress={() => Linking.openURL('https://wa.me/6282284924141')}
+					/>
+					<Button
+						status="danger"
+						text="Cancel"
+						style={styles.btn}
+						onPress={() => handleItemPress(item)}
+					/>
+				</View>
 				{/* <View style={styles.containerBtn}>
 				<Button
 					status="primary"
@@ -171,7 +197,7 @@ export default function ({ navigation }) {
 	);
 	return (
 		<Layout>
-			<View style={styles.container}>
+			{/* <View style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}> */}
 				<FlatList
 					data={order}
 					renderItem={renderCarItem}
@@ -188,14 +214,13 @@ export default function ({ navigation }) {
 					onRequestClose={closeModal}
 				><View style={styles.modalContainer}>
 						<View style={styles.modalContent}>
-							<Image style={{ width: 300, height: 200 }} source={{ uri: detail.image_url }} />
-							<Text>{detail ? detail.car_name : ''}</Text>
+							<Text style={{ fontSize: 30, margin: 30, padding: 20 }}>Are you sure?</Text>
 							<View style={styles.containerBtn}>
 								<Button
 									status="success"
-									text="Order"
+									text="Confirm"
 									style={styles.btn}
-									onPress={closeModal}
+									onPress={() => cancelBooking(detail.id, detail.car_id)}
 								/>
 								<Button
 									status="danger"
@@ -207,7 +232,7 @@ export default function ({ navigation }) {
 						</View>
 					</View>
 				</Modal>
-			</View>
+			{/* </View> */}
 		</Layout>
 	);
 }

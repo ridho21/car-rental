@@ -85,7 +85,7 @@ export default function ({ navigation, route }) {
           <Button
             style={{alignItems: 'center', marginTop: '10%'}}
             disabled={car.stock > 0 ? false : true}
-            status="primary"
+            status="dark100"
             text="Booking Now"
             onPress={() => handleItemPress(car)}
             />

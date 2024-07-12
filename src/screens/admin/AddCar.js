@@ -421,15 +421,15 @@ export default function ({ navigation, route }) {
                         onChangeText={(val) => setDesc(val)}
                     />
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Button status="primary"
+                        <Button status="gray"
                             text="Upload Image"
                             onPress={pickImage}
                             style={styles.btn} />
                         {image && <Image source={{ uri: image }} style={{ width: 300, height: 200, margin: 15 }} />}
                     </View>
                     <Button
-                        status="success"
-                        text="Submit" outline
+                        status="dark100"
+                        text="Submit"
                         onPress={carHandler}
                         style={styles.btn}
                         disabled={isDisabled}

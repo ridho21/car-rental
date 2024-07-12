@@ -117,7 +117,7 @@ export default function ({ navigation }) {
 
 			<View style={styles.containerBtn}>
 				<Button
-					status="primary"
+					status="dark100"
 					text="Update"
 					style={styles.btn}
 					onPress={() => {
