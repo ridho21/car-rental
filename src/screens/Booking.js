@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 18,
-        marginBottom: 20,
+        margin:20
     },
 })
 
@@ -81,14 +81,14 @@ export default function ({ navigation, route }) {
     const transactionHandler = async () => {
         if (car.stock <= 0) {
             alert("Stock 0")
-        } 
-        else if (pick.getDate() - drop.getDate() >= 0){
+        }
+        else if (pick.getDate() - drop.getDate() >= 0) {
             alert("Date not valid")
         } else {
             const transaction = await addDoc(collection(FIRESTORE_DB, 'order'), {
                 car_id: car.id,
                 user_id: auth.currentUser.uid,
-                price: car.price * Math.abs((pick.getDate()-drop.getDate())),
+                price: car.price * Math.abs((pick.getDate() - drop.getDate())),
                 img: car.image_url,
                 created_at: new Date(),
                 driver_option: driver,
@@ -115,8 +115,8 @@ export default function ({ navigation, route }) {
 
     console.log(pick.getDate())
     console.log(drop.getDate())
-    console.log(pick.getDate()-drop.getDate())
-    console.log(new Date())
+    console.log(pick.getDate() - drop.getDate())
+    console.log(isDatePickerVisible1)
 
     useEffect(() => {
     }, []);
@@ -154,18 +154,16 @@ export default function ({ navigation, route }) {
             // }}
             />
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Image style={{ width: '80%', height: 300 }} source={{ uri: car.image_url }} />
+                <Image style={{ width: '100%', height: 300 }} source={{ uri: car.image_url }} />
                 <View style={styles.container}>
                     <Text style={styles.text}>Pick up date</Text>
                     <TextInput
                         placeholder="Pickup Date"
                         value={pick.toDateString()}
-                        // editable={false}
+                        editable={false}
                         rightContent={
-                            <Ionicons name="calendar-outline" size={20} />
+                            <Ionicons name="calendar-outline" size={20} onPress={showDatePicker1} />
                         }
-                        onPress={showDatePicker1}
-
                     />
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible1}
@@ -177,11 +175,10 @@ export default function ({ navigation, route }) {
                     <TextInput
                         placeholder="Drop Date"
                         value={drop.toDateString()}
-                        // editable={false}
+                        editable={false}
                         rightContent={
-                            <Ionicons name="calendar-outline" size={20} />
+                            <Ionicons name="calendar-outline" size={20} onPress={showDatePicker2} />
                         }
-                        onPress={showDatePicker2}
                     />
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible2}

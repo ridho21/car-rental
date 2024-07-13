@@ -3,7 +3,7 @@ import { Image, Platform, TouchableOpacity, FlatList, StyleSheet, View, Activity
 import { Picker, Section, SectionContent, Layout, Text, TextInput, TopNav, useTheme, themeColor, Button } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { signOut, updateProfile, updatePhoneNumber, getAuth, updateEmail } from "firebase/auth";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, doc, query, where, updateDoc, collection, serverTimestamp, getDocs } from "firebase/firestore";
 import { FIREBASE_AUTH, FIRESTORE_DB, FIREBASE_APP } from '../firebase/Config';
 import * as ImagePicker from 'expo-image-picker';
 import 'react-native-get-random-values';
@@ -23,7 +23,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 	},
 	btn: {
-		margin: 30,
+		marginLeft: '35%',
+		marginRight: '35%',
+		marginTop: 20,
 		flex: 1
 	},
 	item: {
@@ -44,6 +46,7 @@ const styles = StyleSheet.create({
 
 export default function ({ navigation }) {
 	const { isDarkmode, setTheme } = useTheme();
+	const [user, setUser] = React.useState([]);
 	const [editable, setEditable] = React.useState(false);
 	const [name, setName] = React.useState('');
 	const [email, setEmail] = React.useState('');
@@ -69,6 +72,16 @@ export default function ({ navigation }) {
 			setImage(result.assets[0].uri);
 		}
 	};
+
+	const editHandler = async (edit) => {
+		if (edit) {
+			setEditable(false);
+			alert('Edit disable')
+		} else {
+			setEditable(true);
+			alert('Edit enable')
+		}
+	}
 
 	async function uploadImageAsync(uri) {
 		// Why are we using XMLHttpRequest? See:
@@ -121,7 +134,7 @@ export default function ({ navigation }) {
 			'Your photo has been uploaded to Firebase Cloud Storage!'
 		);
 		setImage(null);
-		setCarName(null);
+		setName(null);
 		setBrand(null);
 		setTransmision(null);
 		setPrice(null);
@@ -135,19 +148,33 @@ export default function ({ navigation }) {
 				displayName: name,
 				photoURL: url
 			});
+
+			const docRef = doc(FIRESTORE_DB, 'user', user[0].id);
+			const usr = updateDoc(docRef, {
+				address: address,
+				phone: phone
+			});
 			// updatePhoneNumber(auth.currentUser, {PhoneAuth: phone});
 			updateEmail(auth.currentUser, email);
 			alert('Profile updated');
 		} catch (error) {
-			alert('error', error);
+			alert('error', console.error(error));
 		}
 	}
 
 	const loadProfile = async () => {
+		const ref = collection(FIRESTORE_DB, 'user');
+		const qu = query(ref, where('user_id', '==', auth.currentUser.uid));
+		const u = await getDocs(qu);
+		u.forEach((doc) => {
+			user.push({ id: doc.id, ...doc.data() });
+		});
+
 		setName(auth.currentUser.displayName);
 		setEmail(auth.currentUser.email);
 		setImage(auth.currentUser.photoURL);
-		setPhone(auth.currentUser.phoneNumber);
+		setPhone(user[0].phone);
+		setAddress(user[0].address);
 	}
 
 
@@ -182,14 +209,13 @@ export default function ({ navigation }) {
 				/>
 				<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 					{image && <Image source={{ uri: image }} style={{ width: 180, height: 180, margin: 15, borderRadius: 100 }} />}
-					<Button status="primary"
+					<Button status="gray"
 						text="Upload Image"
 						size='sm'
 						onPress={pickImage}
 						style={{ margin: 5 }} />
 				</View>
 				<View style={styles.containerForm}>
-					<Text style={{ marginTop: 5 }}></Text>
 					<TextInput
 						placeholder="Name"
 						// backgroundColor={'transparent'}
@@ -199,9 +225,9 @@ export default function ({ navigation }) {
 						onChangeText={(val) => setName(val)}
 						editable={editable}
 						leftContent={<Ionicons name="person-outline" size={20} color={isDarkmode ? themeColor.white : themeColor.dark} />}
-						rightContent={
-							<Ionicons name="pencil" size={23} onPress={() => { editable == false ? setEditable(true) : setEditable(false) }} />
-						}
+					// rightContent={
+					// 	<Ionicons name="pencil" size={23} onPress={() => { editable == false ? setEditable(true) : setEditable(false) }} />
+					// }
 					/>
 
 					<Text></Text>
@@ -209,7 +235,8 @@ export default function ({ navigation }) {
 						placeholder="E-mail"
 						value={email}
 						onChangeText={(val) => setEmail(val)}
-						editable={false}
+						editable={editable}
+						// editable={false}
 						leftContent={<Ionicons name="mail-outline" size={20} color={isDarkmode ? themeColor.white : themeColor.dark} />}
 					/>
 					<Text></Text>
@@ -229,10 +256,19 @@ export default function ({ navigation }) {
 						editable={editable}
 						leftContent={<Ionicons name="compass-outline" size={20} color={isDarkmode ? themeColor.white : themeColor.dark} />}
 					/>
+					<Button status="gray"
+						text="Edit"
+						size='sm'
+						// disabled={editable}
+						rightContent={
+							<Ionicons style={{ color: 'white' }} name="create-outline" size={15} />
+						}
+						onPress={() => editHandler(editable)}
+						style={{ marginLeft: '75%', margin: 10 }} />
 					<Button
-						status="success"
-						text="Update" outline
-						onPress={updProfile}
+						status="primary"
+						text="UPDATE"
+						onPress={() => updProfile()}
 						style={styles.btn}
 						disabled={isDisabled}
 					/>

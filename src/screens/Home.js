@@ -16,8 +16,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { FIRESTORE_DB, FIREBASE_AUTH } from '../firebase/Config';
 import { collection, getDocs, getDocsFromCache, getDoc, deleteDoc, doc, query, where, or } from 'firebase/firestore';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Lato_400Regular, Lato_400Regular_Italic } from "@expo-google-fonts/lato";
-import * as Font from 'expo-font';
 import numeral from 'numeral';
 
 
@@ -154,13 +152,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 25,
     fontWeight: 'bold',
-    color: 'white',
-    fontFamily: 'CustomFont',
+    color: 'white'
   },
   brand: {
     fontSize: 15,
-    color: 'black',
-    fontFamily: 'CustomFont',
+    color: 'black'
   },
   button: {
     color: 'white',
@@ -190,9 +186,21 @@ export default function ({ navigation }) {
     setCar(item);
   };
 
-  const fetchCategory = async (i) => {
+  const fetchSUV = async () => {
     const ref = collection(FIRESTORE_DB, "car-list");
-    const q = query(ref, where("category", "==", i))
+    const q = query(ref, where("category", "==", 'SUV'))
+    const snap = await getDocs(q);
+    const item = [];
+    snap.forEach((doc) => {
+      item.push({ id: doc.id, ...doc.data() });
+    });
+    setCar(item);
+    console.log(car)
+  };
+
+  const fetchMPV = async () => {
+    const ref = collection(FIRESTORE_DB, "car-list");
+    const q = query(ref, where("category", "==", 'MPV'))
     const snap = await getDocs(q);
     const item = [];
     snap.forEach((doc) => {
@@ -250,11 +258,8 @@ export default function ({ navigation }) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    if(filter == 'ALL'){
-      fetchPost();
-    } else {
-      fetchCategory(filter);
-    }
+    fetchPost(); 
+    setFilter('ALL');
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -451,7 +456,7 @@ export default function ({ navigation }) {
                 }
               />
             </View>
-            <Text style={{ marginLeft: 20, fontFamily: 'CustomFont' }}>Recomended :</Text>
+            <Text style={{ marginLeft: 20 }}>Recomended :</Text>
             <FlatList data={recomended}
               renderItem={renderCarItemHorizontal}
               keyExtractor={(item) => item.id}
@@ -469,13 +474,16 @@ export default function ({ navigation }) {
                 fetchPost()
               }} status={filter == 'ALL' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="ALL" />
               <Button onPress={() => {
+                // setCar([]);
                 setFilter('SUV')
-                fetchCategory(filter)
+                fetchSUV();
+                // onRefresh()
                 // onRefresh()
               }} status={filter == 'SUV' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="SUV" />
               <Button onPress={() => {
                 setFilter('MPV')
-                fetchCategory(filter)
+                fetchMPV();
+                // fetchCategory()
                 // onRefresh()
               }} status={filter == 'MPV' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="MPV" />
             </View>

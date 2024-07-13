@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Platform, TouchableOpacity, FlatList, StyleSheet, View, ActivityIndicator, ScrollView, SafeAreaView } from 'react-native';
-import { Picker, Section, Layout, Text, TextInput, TopNav, useTheme, themeColor, Button } from 'react-native-rapi-ui';
+import { Picker, Layout, Text, TextInput, TopNav, useTheme, themeColor, Button } from 'react-native-rapi-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { signOut } from "firebase/auth";
 import { addDoc, updateDoc, collection, serverTimestamp, doc } from "firebase/firestore";
@@ -66,8 +66,8 @@ export default function ({ navigation, route }) {
         { label: 'Automatic', value: 'Automatic' }
     ];
     const [isUpdate, setIsUpdate] = React.useState(false);
-    const isDisabled = !carName || !brand || !transmision || !price || !seats || !image;
-
+    const isDisabled = !carName || !brand || !transmision || !price || !seats || !image;   
+    
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -402,15 +402,15 @@ export default function ({ navigation, route }) {
                     />
                     <BouncyCheckbox
                         size={25}
-                        style={{ marginLeft: 10, marginBottom: 10, marginTop: 20}}
+                        style={{ marginLeft: 10, marginBottom: 10, marginTop: 20 }}
                         fillColor="green"
                         unFillColor="#FFFFFF"
                         text="Recommended"
-                        textStyle={{textDecorationLine: "none"}}
+                        textStyle={{ textDecorationLine: "none" }}
                         iconStyle={{ borderColor: "red" }}
                         innerIconStyle={{ borderWidth: 2 }}
                         isChecked
-                        onPress={(isChecked) => {setRecomended(isChecked)}}
+                        onPress={(isChecked) => { setRecomended(isChecked) }}
                     />
                     <Text style={{ marginBottom: 10, marginTop: 20 }}> Description</Text>
                     <TextInput

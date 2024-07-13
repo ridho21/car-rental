@@ -4,7 +4,6 @@ import { Layout, Text, Button } from 'react-native-rapi-ui';
 import { FIRESTORE_DB } from '../firebase/Config';
 import { signOut, updateProfile, updatePhoneNumber, getAuth, updateEmail } from "firebase/auth";
 import { collection, getDocs, getDoc, deleteDoc, doc, where, query, updateDoc } from 'firebase/firestore';
-import { fontSize } from 'react-native-rapi-ui/constants/typography';
 
 const styles = StyleSheet.create({
 	container: {
@@ -174,6 +173,7 @@ export default function ({ navigation }) {
 					<Button
 						status="danger"
 						text="Cancel"
+						disabled={item.status == 'PAID' ? true : false}
 						style={styles.btn}
 						onPress={() => handleItemPress(item)}
 					/>

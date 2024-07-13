@@ -28,7 +28,7 @@ export default function ({ navigation }) {
   const addUser = async (user) => {
     try {
       const users = await addDoc(collection(FIRESTORE_DB, 'user'), {
-        id: user.currentUser.uid,
+        user_id: user.currentUser.uid,
         address: "",
         phone: ""
       });

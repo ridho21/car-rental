@@ -29,12 +29,11 @@
         {
           "photosPermission": "Allow $(PRODUCT_NAME) to access your photos"
         }
-      ],
-      "expo-asset"
+      ]
     ],
     "extra": {
       "eas": {
-        "projectId": "de5814c2-6257-4126-9b20-969fcee65378"
+        "projectId": "c99031e6-6fda-4a2d-a06b-4bc257e1fa95"
       }
     },
     "android": {

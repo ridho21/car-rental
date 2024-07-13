@@ -4,7 +4,6 @@ import { AuthProvider } from "./src/provider/AuthProvider";
 import { ThemeProvider } from "react-native-rapi-ui";
 import { LogBox } from "react-native";
 import Loading from "./src/screens/utils/Loading";
-import * as Font from 'expo-font';
 
 
 // const loadFonts = () => {
