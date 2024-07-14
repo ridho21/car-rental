@@ -19,13 +19,17 @@ const styles = StyleSheet.create({
 	},
 	containerTxt: {
 		display: 'flex',
-		margin: 5,
-		backgroundColor: 'yellow',
 		flexDirection: 'row',
+		textAlign: 'center',
+		// backgroundColor:'yellow',
+		// borderColor:'black',
+		// borderWidth:1,
+		// borderStyle: 'dashed'
 	},
 	containerPrice: {
 		alignItems: 'center',
 		padding: 2,
+		marginTop:'5%'
 		// marginLeft: '70%'
 	},
 	card: {
@@ -44,9 +48,10 @@ const styles = StyleSheet.create({
 	},
 	txt: {
 		// backgroundColor: 'green',
-		alignItems: 'center',
-		margin: 2,
-		flex: 1
+		textAlign: 'center',
+		margin: 3,
+		flex: 1,
+		fontStyle:'italic'
 	},
 	titlePaid: {
 		fontSize: 25,
@@ -153,8 +158,22 @@ export default function ({ navigation }) {
 			<View style={styles.card}>
 				<Image style={{ width: '100%', aspectRatio: 1.5 }} source={{ uri: item.img }} />
 				{/* <Text>{item.id}</Text> */}
-				<View style={{ alignItems: 'center', margin: 10 }}>
+				<View style={{ alignItems: 'center', margin: 5 }}>
 					<Text style={item.status == 'UNPAID' ? styles.titleUnpaid : styles.titlePaid}>{item.status}</Text>
+				</View>
+				<View style={styles.containerTxt}>
+					<Text style={{
+						textAlign: 'center',
+						flex: 1,
+						fontSize:20,
+						fontWeight:'bold'
+					}}>Start</Text>
+					<Text style={{
+						textAlign: 'center',
+						flex: 1,
+						fontSize:20,
+						fontWeight:'bold'
+					}}>End</Text>
 				</View>
 				<View style={styles.containerTxt}>
 					<Text style={styles.txt}>{new Date(item.pickup_date.seconds * 1000).toDateString()}</Text>

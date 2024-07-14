@@ -67,71 +67,69 @@ export default function ({ navigation, route }) {
       //   }
       // }}
       />
-      <View
-        style={{
-          flex: 0,
-          alignItems: 'center',
-          maxWidth: '100%',
-          maxHeight: '100%',
-          // justifyContent: "center",
-        }}
-      >
-        <Image style={{ width: '98%', aspectRatio: 1.5 }} source={{ uri: car.image_url }} />
-        <Text fontWeight="bold" style={{ fontSize: 25, marginTop: 20 }}>{car.stock > 0 ? "Tersedia" : "Tidak Tersedia"}</Text>
-        <View style={{ backgroundColor: 'black', width: '100%', height: '50%', borderRadius: 20, marginTop: '8%' }}>
-          <Text fontWeight="bold" style={{ color: 'white', margin: '3%', fontSize: 25, textAlign: 'center' }}>{car.brand} | {car.car_name}</Text>
-          <Text numberOfLines={5} style={{ alignItems: 'center', color: 'white', textAlign: 'justify', marginHorizontal: '5%' }}>{car.description}</Text>
-          <View style={{ flexDirection: 'row', padding: '3%', marginTop: '4%' }}>
-            <View style={{ backgroundColor: 'white', width: 100, height: 100, marginHorizontal: '3%', borderRadius: 10 }}>
-              <Ionicons
-                name="speedometer-outline"
-                style={{ textAlign: 'center', marginTop: '3%' }}
-                size={35}
-                color={isDarkmode ? themeColor.white100 : themeColor.dark}
-              />
-              <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 2 }}>Top Speed</Text>
-              <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 4, fontWeight: 'bold' }}>{car.top_speed}km/h</Text>
+      <ScrollView>
+        <View
+          style={{
+            alignItems: 'center'
+            // justifyContent: "center",
+          }}
+        >
+          <Image style={{ width: '98%', aspectRatio: 1.5 }} source={{ uri: car.image_url }} />
+          <Text fontWeight="bold" style={{ fontSize: 25, marginTop: 20 }}>{car.stock > 0 ? "Availabel" : "Out Of Stock"}</Text>
+          <View style={{ backgroundColor: 'black', width: '100%',borderRadius: 20, marginTop: '8%' }}>
+            <Text fontWeight="bold" style={{ color: 'white', margin: '3%', fontSize: 25, textAlign: 'center' }}>{car.brand} | {car.car_name}</Text>
+            <Text numberOfLines={5} style={{ alignItems: 'center', color: 'white', textAlign: 'justify', marginHorizontal: '5%' }}>{car.description}</Text>
+            <View style={{ flexDirection: 'row', alignContent: 'center', marginTop: '3%', justifyContent: 'center' }}>
+              <View style={{ backgroundColor: 'white', width: 100, height: 100, marginHorizontal: '3%', borderRadius: 10 }}>
+                <Ionicons
+                  name="speedometer-outline"
+                  style={{ textAlign: 'center', marginTop: '3%' }}
+                  size={35}
+                  color={isDarkmode ? themeColor.white100 : themeColor.dark}
+                />
+                <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 2 }}>Top Speed</Text>
+                <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 4, fontWeight: 'bold' }}>{car.top_speed}km/h</Text>
+              </View>
+              <View style={{ backgroundColor: 'white', width: 100, height: 100, marginHorizontal: '3%', borderRadius: 10 }}>
+                <Ionicons
+                  name="car-outline"
+                  style={{ textAlign: 'center', marginTop: '3%' }}
+                  size={35}
+                  color={isDarkmode ? themeColor.white100 : themeColor.dark}
+                />
+                <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 2 }}>Car Year</Text>
+                <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 4, fontWeight: 'bold' }}>{car.car_year}</Text>
+              </View><View style={{ backgroundColor: 'white', width: 100, height: 100, marginHorizontal: '3%', borderRadius: 10 }}>
+                <Ionicons
+                  name="flame-outline"
+                  style={{ textAlign: 'center', marginTop: '3%' }}
+                  size={35}
+                  color={isDarkmode ? themeColor.white100 : themeColor.dark}
+                />
+                <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 2 }}>Max Fuel</Text>
+                <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 4, fontWeight: 'bold' }}>{car.max_fuel}L</Text>
+              </View>
             </View>
-            <View style={{ backgroundColor: 'white', width: 100, height: 100, marginHorizontal: '3%', borderRadius: 10 }}>
-              <Ionicons
-                name="car-outline"
-                style={{ textAlign: 'center', marginTop: '3%' }}
-                size={35}
-                color={isDarkmode ? themeColor.white100 : themeColor.dark}
-              />
-              <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 2 }}>Car Year</Text>
-              <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 4, fontWeight: 'bold' }}>{car.car_year}</Text>
-            </View><View style={{ backgroundColor: 'white', width: 100, height: 100, marginHorizontal: '3%', borderRadius: 10 }}>
-              <Ionicons
-                name="flame-outline"
-                style={{ textAlign: 'center', marginTop: '3%' }}
-                size={35}
-                color={isDarkmode ? themeColor.white100 : themeColor.dark}
-              />
-              <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 2 }}>Max Fuel</Text>
-              <Text style={{ color: 'black', fontSize: 17, textAlign: 'center', marginTop: 4, fontWeight: 'bold' }}>{car.max_fuel}L</Text>
-            </View>
+            <View style={{margin:'25%'}}></View>
           </View>
         </View>
-
-        <View style={{ position: 'absolute', bottom: '0%', backgroundColor: 'grey', width: '100%', height: 'auto', borderTopStartRadius: 20, borderTopEndRadius: 20 }}>
-          <View style={{ display: 'flex', flexDirection: 'row', marginTop: '5%' }}>
-            <Text style={{ color: 'white', fontSize: 20, marginStart: '5%' }}>Price</Text>
-            <Text style={{ color: 'white', fontSize: 20, marginStart: 'auto', marginEnd: '5%' }}>Rp.{car.price}/Day</Text>
-          </View>
-          <View style={{ alignItems: 'center', marginVertical:'6%' }}>
-            <Button
-              style={{ alignItems: 'center', borderRadius: 20 }}
-              width={'93%'}
-              disabled={car.stock > 0 ? false : true}
-              status="danger"
-              text="Booking Now"
-              onPress={() => handleItemPress(car)}
-            />
-          </View>
+      </ScrollView>
+      <View style={{ position: 'absolute', bottom: '0%', backgroundColor: 'grey', width: '100%', height: 'auto', borderTopStartRadius: 20, borderTopEndRadius: 20 }}>
+        <View style={{ display: 'flex', flexDirection: 'row', marginTop: '5%' }}>
+          <Text style={{ color: 'white', fontSize: 20, marginStart: '5%' }}>Price</Text>
+          <Text style={{ color: 'white', fontSize: 20, marginStart: 'auto', marginEnd: '5%' }}>Rp.{car.price}/Day</Text>
+        </View>
+        <View style={{ alignItems: 'center', marginVertical: '4%' }}>
+          <Button
+            style={{ alignItems: 'center', borderRadius: 20 }}
+            width={'93%'}
+            disabled={car.stock > 0 ? false : true}
+            status="danger"
+            text="Booking Now"
+            onPress={() => handleItemPress(car)}
+          />
         </View>
       </View>
-
     </Layout>
   );
 }

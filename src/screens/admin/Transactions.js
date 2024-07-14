@@ -57,10 +57,14 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 	},
 	paid: {
-		color: 'green'
+		color: 'green',
+		fontSize: 20,
+		fontWeight: 'bold'
 	},
 	unpaid: {
-		color: 'red'
+		color: 'red',
+		fontSize: 20,
+		fontWeight: 'bold'
 	}
 });
 
@@ -74,14 +78,21 @@ export default function ({ navigation }) {
 	const [car, setCar] = React.useState([]);
 	// const [data, setData] = React.useState([]);
 
-	const deleteDocument = async (documentId) => {
-		try {
-			const docRef = doc(FIRESTORE_DB, 'order', documentId);
-			await deleteDoc(docRef);
-			alert('Cancel Booking Success');
-			onRefresh();
-		} catch (error) {
-			alert('Failed, ', error);
+	const completeOrder = async (documentId, status) => {
+		if (status == 'PAID') {
+			try {
+				const docRef = doc(FIRESTORE_DB, 'order', documentId);
+				await updateDoc(docRef, {
+					status: 'DONE',
+				});
+				alert('Order Complete');
+				onRefresh();
+			} catch (error) {
+				alert('FAILED, ', error);
+				console.log(error)
+			}
+		} else {
+			alert('Booking Unpaid!')
 		}
 	};
 
@@ -138,25 +149,32 @@ export default function ({ navigation }) {
 			</View>
 			<View style={styles.containerPrice}>
 				<Text style={styles.price}>Rp.{item.price}</Text>
-				<Text style={item.status == 'PAID' ? styles.paid : styles.unpaid}>{item.status}</Text>
+				<Text style={item.status == 'PAID' || item.status == 'DONE' ? styles.paid : styles.unpaid}>{item.status}</Text>
 			</View>
 
 			<View style={styles.containerBtn}>
 				<Button
 					status="dark100"
 					text="Confirm Payment"
-					disabled={item.status == 'PAID' ? true : false}
+					disabled={item.status == 'PAID' || item.status == 'DONE' ? true : false}
 					style={styles.btn}
 					onPress={() => confirmPayment(item.id)}
 				/>
 				<Button
 					status="danger"
 					text="Cancel Order"
-					disabled={item.status == 'PAID' ? true : false}
+					disabled={item.status == 'PAID' || item.status == 'DONE' ? true : false}
 					style={styles.btn}
 					onPress={() => deleteDocument(item.id)}
 				/>
 			</View>
+			<Button
+				status="success"
+				text="Complete"
+				disabled={item.status == 'DONE' ? true : false}
+				style={styles.btn}
+				onPress={() => completeOrder(item.id, item.status)}
+			/>
 
 		</View>
 	);
