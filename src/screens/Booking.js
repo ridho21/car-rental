@@ -154,7 +154,7 @@ export default function ({ navigation, route }) {
             // }}
             />
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Image style={{ width: '100%', height: 300 }} source={{ uri: car.image_url }} />
+                <Image style={{ width: '100%', aspectRatio:1.5 }} source={{ uri: car.image_url }} />
                 <View style={styles.container}>
                     <Text style={styles.text}>Pick up date</Text>
                     <TextInput

@@ -326,7 +326,7 @@ export default function ({ navigation, route }) {
                 <View style={styles.containerForm}>
                     <Text style={{ marginBottom: 10, marginTop: 10 }}> Car Name </Text>
                     <TextInput
-                        placeholder="Rush"
+                        placeholder="~"
                         value={carName}
                         onChangeText={(val) => setCarName(val)}
                     // leftContent={
@@ -335,7 +335,7 @@ export default function ({ navigation, route }) {
                     />
                     <Text style={{ marginBottom: 10, marginTop: 20 }}> Category</Text>
                     <TextInput
-                        placeholder="SUV"
+                        placeholder="SUV/MPV/OTHER"
                         value={category}
                         onChangeText={(val) => setCategory(val)}
                     // rightContent={
@@ -344,7 +344,7 @@ export default function ({ navigation, route }) {
                     />
                     <Text style={{ marginBottom: 10, marginTop: 20 }}> Brand</Text>
                     <TextInput
-                        placeholder="Toyota"
+                        placeholder="~"
                         value={brand}
                         onChangeText={(val) => setBrand(val)}
                     // rightContent={

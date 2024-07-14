@@ -151,7 +151,7 @@ export default function ({ navigation }) {
 	const renderCarItem = ({ item }) => (
 		<TouchableOpacity>
 			<View style={styles.card}>
-				<Image style={{ width: '100%', height: 200 }} source={{ uri: item.img }} />
+				<Image style={{ width: '100%', aspectRatio: 1.5 }} source={{ uri: item.img }} />
 				{/* <Text>{item.id}</Text> */}
 				<View style={{ alignItems: 'center', margin: 10 }}>
 					<Text style={item.status == 'UNPAID' ? styles.titleUnpaid : styles.titlePaid}>{item.status}</Text>
@@ -198,40 +198,41 @@ export default function ({ navigation }) {
 	return (
 		<Layout>
 			{/* <View style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}> */}
-				<FlatList
-					data={order}
-					renderItem={renderCarItem}
-					keyExtractor={(item) => item.id}
-					showsVerticalScrollIndicator={false}
-					refreshControl={
-						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-					}
-				/>
-				<Modal
-					visible={modalVisible}
-					animationType="slide"
-					transparent={true}
-					onRequestClose={closeModal}
-				><View style={styles.modalContainer}>
-						<View style={styles.modalContent}>
-							<Text style={{ fontSize: 30, margin: 30, padding: 20 }}>Are you sure?</Text>
-							<View style={styles.containerBtn}>
-								<Button
-									status="success"
-									text="Confirm"
-									style={styles.btn}
-									onPress={() => cancelBooking(detail.id, detail.car_id)}
-								/>
-								<Button
-									status="danger"
-									text="Close"
-									style={styles.btn}
-									onPress={closeModal}
-								/>
-							</View>
+			{order.length > 0 ? '' : <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center' }}>Data Not Found</Text>}
+			<FlatList
+				data={order}
+				renderItem={renderCarItem}
+				keyExtractor={(item) => item.id}
+				showsVerticalScrollIndicator={false}
+				refreshControl={
+					<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+				}
+			/>
+			<Modal
+				visible={modalVisible}
+				animationType="slide"
+				transparent={true}
+				onRequestClose={closeModal}
+			><View style={styles.modalContainer}>
+					<View style={styles.modalContent}>
+						<Text style={{ fontSize: 30, margin: 30, padding: 20 }}>Are you sure?</Text>
+						<View style={styles.containerBtn}>
+							<Button
+								status="success"
+								text="Confirm"
+								style={styles.btn}
+								onPress={() => cancelBooking(detail.id, detail.car_id)}
+							/>
+							<Button
+								status="danger"
+								text="Close"
+								style={styles.btn}
+								onPress={closeModal}
+							/>
 						</View>
 					</View>
-				</Modal>
+				</View>
+			</Modal>
 			{/* </View> */}
 		</Layout>
 	);

@@ -83,6 +83,14 @@ export default function ({ navigation }) {
 		}
 	}
 
+	const profile = () => {
+		if (auth.currentUser.photoURL != null) {
+			setImage(auth.currentUser.photoURL);
+		} else {
+			setImage('https://firebasestorage.googleapis.com/v0/b/car-rental-39b9e.appspot.com/o/profile%2Fprofile.jpg?alt=media&token=f232194d-53db-4405-8f03-4b5ecc4e5c9f');
+		}
+	};
+
 	async function uploadImageAsync(uri) {
 		// Why are we using XMLHttpRequest? See:
 		// https://github.com/expo/expo/issues/2402#issuecomment-443726662
@@ -169,10 +177,8 @@ export default function ({ navigation }) {
 		u.forEach((doc) => {
 			user.push({ id: doc.id, ...doc.data() });
 		});
-
 		setName(auth.currentUser.displayName);
 		setEmail(auth.currentUser.email);
-		setImage(auth.currentUser.photoURL);
 		setPhone(user[0].phone);
 		setAddress(user[0].address);
 	}
@@ -180,6 +186,7 @@ export default function ({ navigation }) {
 
 	useEffect(() => {
 		loadProfile();
+		profile();
 	}, []);
 	return (
 		<Layout>

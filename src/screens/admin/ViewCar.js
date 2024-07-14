@@ -101,7 +101,7 @@ export default function ({ navigation }) {
 
 	const renderCarItem = ({ item }) => (
 		<View style={styles.card}>
-			<Image style={{ width: '100%', height: 200 }} source={{ uri: item.image_url }} />
+			<Image style={{ width: '100%', aspectRatio: 1.5 }} source={{ uri: item.image_url }} />
 			{/* <Text>{item.id}</Text> */}
 			<View style={{ alignItems: 'center', margin: 10 }}>
 				<Text style={styles.title}>{item.car_name}</Text>
@@ -139,11 +139,11 @@ export default function ({ navigation }) {
 		<Layout>
 			<TopNav
 				middleContent={
-                    <Image
-                        style={styles.logo}
-                        source={require('../../../assets/logo.png')}
-                    />
-                }
+					<Image
+						style={styles.logo}
+						source={require('../../../assets/logo.png')}
+					/>
+				}
 				leftContent={
 					<Ionicons
 						name={isDarkmode ? "sunny" : "moon"}

@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
     flex: 0,
     width: 300,
     height: 200,
-    padding: 10,
+    padding: '2%',
     marginVertical: 8,
-    marginHorizontal: 16,
+    marginHorizontal: 15,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     height: 20,
   },
   containerBrand: {
-    marginTop: 10,
     display: 'flex',
     flexDirection: 'row'
   },
@@ -184,6 +183,14 @@ export default function ({ navigation }) {
       item.push({ id: doc.id, ...doc.data() });
     });
     setCar(item);
+  };
+
+  const profile = () => {
+    if (auth.currentUser.photoURL != null) {
+      setImage(auth.currentUser.photoURL);
+    } else {
+      setImage('https://firebasestorage.googleapis.com/v0/b/car-rental-39b9e.appspot.com/o/profile%2Fprofile.jpg?alt=media&token=f232194d-53db-4405-8f03-4b5ecc4e5c9f');
+    }
   };
 
   const fetchSUV = async () => {
@@ -258,7 +265,7 @@ export default function ({ navigation }) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    fetchPost(); 
+    fetchPost();
     setFilter('ALL');
     setTimeout(() => {
       setRefreshing(false);
@@ -278,19 +285,25 @@ export default function ({ navigation }) {
           <Ionicons style={{ marginLeft: 10 }} name="car-sport" size={15} color={'white'} />
           <Text style={{ marginLeft: 5, color: 'white', fontSize: 15 }}>{item.stock}</Text>
         </View>
-        <Image style={{ width: '100%', height: 200 }} source={{ uri: item.image_url }} />
+        <Image style={{ width: '100%', aspectRatio: 1.5 }} source={{ uri: item.image_url }} />
         {/* <Text>{item.id}</Text> */}
         <View style={styles.containerBrand}>
           <View style={{ alignContent: 'left' }}>
             <Text style={styles.carName}>{item.car_name}</Text>
             <Text style={styles.brand}>{item.brand}</Text>
           </View>
-          <View style={{ marginTop: 5 }}>
-            <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 10, padding: 10, marginTop: 10 }}>
-              <Text>Rp.{formatCurrency(item.price)}/hari</Text>
-              <Ionicons style={{ marginLeft: 2 }} name="chevron-forward-circle" size={18} />
-            </View>
-            {/* <Text style={styles.brand}>{item.brand}</Text> */}
+          <View style={{
+            flexDirection: 'row', position: 'absolute',
+            right: 1,
+            bottom: 1,
+            backgroundColor: '#fff',
+            padding: 8,
+            borderRadius: 4,
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)', // hanya berlaku di web, gunakan elevation di Android
+            elevation: 3,
+          }}>
+            <Text>Rp.{formatCurrency(item.price)}/hari</Text>
+            <Ionicons style={{ marginLeft: 2 }} name="chevron-forward-circle" size={18} />
           </View>
         </View>
 
@@ -322,14 +335,23 @@ export default function ({ navigation }) {
   const renderCarItemHorizontal = ({ item }) => (
     <TouchableOpacity onPress={() => handleItemPress(item)}>
       <View style={styles.cardHorizontal}>
-        <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.image_url }} />
+        <Image style={{ width: '100%', aspectRatio: 1.5 }} source={{ uri: item.image_url }} />
         <View style={styles.horizontalContainer}>
           <Text style={{ color: 'white', fontSize: 25, fontWeight: 'bold' }}>{item.car_name}</Text>
           {/* <Text style={{ color: 'white', fontSize: 15, marginTop:20 }}>{item.stock}</Text> */}
         </View>
-        <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 10, padding: 7, position: 'absolute', marginStart: 160, marginTop: 160 }}>
-          <Text>Rp.{formatCurrency(item.price)}/hari</Text>
-          <Ionicons style={{ marginLeft: 2 }} name="chevron-forward-circle" size={18} />
+        <View style={{
+          flexDirection: 'row', flexDirection: 'row', position: 'absolute',
+          right: 4,
+          bottom: 4,
+          backgroundColor: '#fff',
+          padding: 5,
+          borderRadius: 4,
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)', // hanya berlaku di web, gunakan elevation di Android
+          elevation: 3,
+        }}>
+          <Text style={{fontSize:12}}>Rp.{formatCurrency(item.price)}/hari</Text>
+          <Ionicons style={{ marginLeft: 2 }} name="chevron-forward-circle" size={12} />
         </View>
         <View style={styles.horizontalContainer1}>
           <Ionicons style={{ marginRight: 4 }} name="people" size={15} color={'white'} />
@@ -389,8 +411,10 @@ export default function ({ navigation }) {
     fetchPost();
     fetchRecomended();
     fetchData();
-    setImage(auth.currentUser.photoURL);
     setFilter('ALL');
+    profile();
+    console.log(image)
+
     // console.log(car);
     // if (search.length > 0){
     //   const unsubscribe =
@@ -421,7 +445,7 @@ export default function ({ navigation }) {
           />
         }
         rightContent={
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', aspectRatio: 1 }}>
             {image && <Image source={{ uri: image }} style={{ width: 45, height: 45, borderRadius: 100 }} />}
           </View>
         }
