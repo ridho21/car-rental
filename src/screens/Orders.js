@@ -192,7 +192,7 @@ export default function ({ navigation }) {
 					<Button
 						status="danger"
 						text="Cancel"
-						disabled={item.status == 'PAID' ? true : false}
+						disabled={item.status == 'PAID' || item.status == 'DONE'? true : false}
 						style={styles.btn}
 						onPress={() => handleItemPress(item)}
 					/>

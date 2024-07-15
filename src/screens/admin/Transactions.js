@@ -96,6 +96,16 @@ export default function ({ navigation }) {
 		}
 	};
 
+	const deleteDocument = async (documentId) => {
+		try {
+			const docRef = doc(FIRESTORE_DB, 'order', documentId);
+			await deleteDoc(docRef);
+			alert('Cancel Order Success');
+		} catch (error) {
+			alert('Failed, ', error);
+		}
+	};
+
 	const confirmPayment = async (documentId) => {
 		try {
 			const docRef = doc(FIRESTORE_DB, 'order', documentId);
