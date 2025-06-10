@@ -23,9 +23,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 	},
 	btn: {
-		marginLeft: '35%',
-		marginRight: '35%',
-		marginTop: 20,
+		alignItems: 'center',
+		marginStart:'15%',
+		marginEnd:'15%',
+		marginTop: '10%',
 		flex: 1
 	},
 	item: {
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
 export default function ({ navigation }) {
 	const { isDarkmode, setTheme } = useTheme();
 	const [user, setUser] = React.useState([]);
-	const [editable, setEditable] = React.useState(false);
+	const [editable, setEditable] = React.useState(true);
 	const [name, setName] = React.useState('');
 	const [email, setEmail] = React.useState('');
 	const [phone, setPhone] = React.useState('');
@@ -176,11 +177,12 @@ export default function ({ navigation }) {
 		const u = await getDocs(qu);
 		u.forEach((doc) => {
 			user.push({ id: doc.id, ...doc.data() });
-		});
-		setName(auth.currentUser.displayName);
-		setEmail(auth.currentUser.email);
+		}); 
 		setPhone(user[0].phone);
 		setAddress(user[0].address);
+
+		setName(auth.currentUser.displayName);
+		setEmail(auth.currentUser.email);
 	}
 
 
@@ -217,10 +219,14 @@ export default function ({ navigation }) {
 				<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 					{image && <Image source={{ uri: image }} style={{ width: 180, height: 180, margin: 15, borderRadius: 100 }} />}
 					<Button status="gray"
-						text="Upload Image"
+						text="upload"
 						size='sm'
 						onPress={pickImage}
-						style={{ margin: 5 }} />
+						style={{ margin: 10 }}
+						rightContent={
+							<Ionicons name="cloud-upload-outline" size={20} color={'white'} />
+						}
+						/>
 				</View>
 				<View style={styles.containerForm}>
 					<TextInput
@@ -242,7 +248,7 @@ export default function ({ navigation }) {
 						placeholder="E-mail"
 						value={email}
 						onChangeText={(val) => setEmail(val)}
-						editable={editable}
+						editable={false}
 						// editable={false}
 						leftContent={<Ionicons name="mail-outline" size={20} color={isDarkmode ? themeColor.white : themeColor.dark} />}
 					/>
@@ -263,7 +269,7 @@ export default function ({ navigation }) {
 						editable={editable}
 						leftContent={<Ionicons name="compass-outline" size={20} color={isDarkmode ? themeColor.white : themeColor.dark} />}
 					/>
-					<Button status="gray"
+					{/* <Button status="gray"
 						text="Edit"
 						size='sm'
 						// disabled={editable}
@@ -271,9 +277,9 @@ export default function ({ navigation }) {
 							<Ionicons style={{ color: 'white' }} name="create-outline" size={15} />
 						}
 						onPress={() => editHandler(editable)}
-						style={{ marginLeft: '75%', margin: 10 }} />
+						style={{ marginLeft: '75%', margin: 10 }} /> */}
 					<Button
-						status="primary"
+						status="dark100"
 						text="UPDATE"
 						onPress={() => updProfile()}
 						style={styles.btn}

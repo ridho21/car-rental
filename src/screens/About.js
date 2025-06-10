@@ -80,7 +80,8 @@ export default function ({ navigation, route }) {
             margin: '5%'
           }}>CV NADHIF EQUATOR</Text>
           <Image style={{ width: '100%', aspectRatio: 2.3, padding: '5%', margin: '10%' }} source={require('../../assets/logo-about.png')} />
-          <Text style={{ textAlign: 'justify', margin: '5%', letterSpacing: 0.8, lineHeight: 25}}>
+          <Text style={{fontSize:13, textAlign:'center', margin: '5%'}}>Jalan Labersa No.3 Simpang Tiga Bukit Raya, Tanah Merah, Kec. Siak Hulu, Kabupaten Kampar, Riau 28282</Text>
+          <Text style={{ textAlign: 'justify', margin: '5%', letterSpacing: 0.8, lineHeight: 25 }}>
             CV NADHIF EQUATOR adalah sebuah perusahaan rental mobil Pekanbaru yang berdedikasi untuk memberikan pengalaman berkendara yang tak terlupakan
 
             kepada pelanggan. Dengan fokus pada kenyamanan, keandalan, dan pelayanan pelanggan yang superior, kami telah menjadi pilihan utama bagi mereka yang mencari solusi transportasi yang handal di setiap perjalanan Kami percaya bahwa setiap perjalanan memiliki cerita uniknya sendiri, dan kami di sini untuk membantu Anda menulis cerita Anda dengan kenyamanan dan

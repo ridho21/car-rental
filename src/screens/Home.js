@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, RefreshControl, Image, Modal, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { View, StyleSheet, RefreshControl, Linking, Image, Modal, ImageBackground, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import { signOut, getAuth } from "firebase/auth";
 import {
   Layout,
@@ -230,7 +230,7 @@ export default function ({ navigation }) {
     setRecomended(item);
   };
 
-  const fetchData = async () => {
+  const searchData = async () => {
     // const snap = await getDoc(doc(FIRESTORE_DB, "car-list", "B26rb1ZopvY0YQTox8Bi", ""))
     const ref = collection(FIRESTORE_DB, "car-list");
     const q = query(ref, where("car_name", ">=", search), where("car_name", "<=", search + '\uf8ff'))
@@ -350,7 +350,7 @@ export default function ({ navigation }) {
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)', // hanya berlaku di web, gunakan elevation di Android
           elevation: 3,
         }}>
-          <Text style={{fontSize:12}}>Rp.{formatCurrency(item.price)}/hari</Text>
+          <Text style={{ fontSize: 12 }}>Rp.{formatCurrency(item.price)}/hari</Text>
           <Ionicons style={{ marginLeft: 2 }} name="chevron-forward-circle" size={12} />
         </View>
         <View style={styles.horizontalContainer1}>
@@ -410,7 +410,7 @@ export default function ({ navigation }) {
   useEffect(() => {
     fetchPost();
     fetchRecomended();
-    fetchData();
+    searchData();
     setFilter('ALL');
     profile();
     console.log(image)
@@ -435,120 +435,148 @@ export default function ({ navigation }) {
   }, [search]);
 
   return (
-    <Layout>
-      <TopNav
-        middleContent=""
-        leftContent={
-          <Image
-            style={styles.logo}
-            source={require('../../assets/logo.png')}
-          />
-        }
-        rightContent={
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', aspectRatio: 1 }}>
-            {image && <Image source={{ uri: image }} style={{ width: 45, height: 45, borderRadius: 100 }} />}
-          </View>
-        }
-        // leftAction={() => {
-        // 	if (isDarkmode) {
-        // 		setTheme("light");
-        // 	} else {
-        // 		setTheme("dark");
-        // 	}
-        // }}
-        rightAction={() => {
-          navigation.navigate("Profile");
-        }}
-        backgroundColor="transparent"
-        borderColor="transparent"
-      />
-      <FlatList
-        style={{ paddingTop: 5 }}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        ListHeaderComponent={
-          <View>
-            <View style={{ padding: 15 }}>
-              <TextInput
-                placeholder="Search"
-                value={search}
-                onChangeText={(val) => setSearch(val)}
-                rightContent={
-                  <Ionicons name="search-outline" size={25} color={'grey'} />
-                }
-              />
-            </View>
-            <Text style={{ marginLeft: 20 }}>Recomended :</Text>
-            <FlatList data={recomended}
-              renderItem={renderCarItemHorizontal}
-              keyExtractor={(item) => item.id}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            />
-          </View>
-        }
-        // <View style={styles.container}>
-        ListFooterComponent={
-          <View style={styles.content}>
-            <View style={{ display: 'flex', flexDirection: 'row', paddingLeft: 15 }}>
-              <Button onPress={() => {
-                setFilter('ALL')
-                fetchPost()
-              }} status={filter == 'ALL' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="ALL" />
-              <Button onPress={() => {
-                // setCar([]);
-                setFilter('SUV')
-                fetchSUV();
-                // onRefresh()
-                // onRefresh()
-              }} status={filter == 'SUV' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="SUV" />
-              <Button onPress={() => {
-                setFilter('MPV')
-                fetchMPV();
-                // fetchCategory()
-                // onRefresh()
-              }} status={filter == 'MPV' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="MPV" />
-            </View>
-            <SafeAreaView style={{ flex: 0 }}>
-              <FlatList
-                data={car}
-                renderItem={renderCarItem}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-              // scrollEnabled={false}
 
+    <Layout>
+      {/* <ImageBackground
+        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/car-rental-39b9e.appspot.com/o/bg-car-rental.png?alt=media&token=d6b2d9bc-9562-4cff-a970-de1668c7fbde' }} // Ganti dengan URL gambar Anda atau gunakan require('./path/to/image.jpg')
+        style={{
+          flex: 1,
+          // width: width,
+          // height: height,
+          justifyContent: 'center', // Menentukan posisi elemen di dalam ImageBackground
+          alignItems: 'center',
+        }}
+      > */}
+
+        {/* <View style={{position: 'absolute', bottom: 2, left: 2, zIndex: 5}}> */}
+
+        {/* </View> */}
+        <TopNav
+          middleContent=""
+          leftContent={
+            <Image
+              style={styles.logo}
+              source={require('../../assets/logo.png')}
+            />
+          }
+          rightContent={
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', aspectRatio: 1 }}>
+              {image && <Image source={{ uri: image }} style={{ width: 45, height: 45, borderRadius: 100 }} />}
+            </View>
+          }
+          // leftAction={() => {
+          // 	if (isDarkmode) {
+          // 		setTheme("light");
+          // 	} else {
+          // 		setTheme("dark");
+          // 	}
+          // }}
+          rightAction={() => {
+            navigation.navigate("Profile");
+          }}
+          backgroundColor="transparent"
+          borderColor="transparent"
+        />
+        <FlatList
+          style={{ paddingTop: 5 }}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListHeaderComponent={
+            <View>
+              <View style={{ padding: 15 }}>
+                <TextInput
+                  placeholder="Search"
+                  value={search}
+                  onChangeText={(val) => setSearch(val)}
+                  rightContent={
+                    <Ionicons name="search-outline" size={25} color={'grey'} />
+                  }
+                />
+              </View>
+              <Text style={{ marginLeft: 20, fontSize: 20, color: 'white' }}>Recomended :</Text>
+              <FlatList data={recomended}
+                renderItem={renderCarItemHorizontal}
+                keyExtractor={(item) => item.id}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
               />
-              <Modal
-                visible={modalVisible}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={closeModal}
-              ><View style={styles.modalContainer}>
-                  <View style={styles.modalContent}>
-                    <Image style={{ width: 300, height: 200 }} source={{ uri: detail.image_url }} />
-                    <Text>{detail ? detail.car_name : ''}</Text>
-                    <View style={styles.containerBtn}>
-                      <Button
-                        status="success"
-                        text="Order"
-                        style={styles.btn}
-                        onPress={closeModal}
-                      />
-                      <Button
-                        status="danger"
-                        text="Close"
-                        style={styles.btn}
-                        onPress={closeModal}
-                      />
+            </View>
+          }
+          // <View style={styles.container}>
+          ListFooterComponent={
+            <View style={styles.content}>
+              {/* <View style={{
+              position: 'absolute',
+              top: height / 2 - 50, // Adjust the position as needed
+              left: width / 2 - 100,
+              width: 200,
+              height: 100,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+
+
+            </View> */}
+              <View style={{ display: 'flex', flexDirection: 'row', paddingLeft: 15 }}>
+                <Button onPress={() => {
+                  setFilter('ALL')
+                  fetchPost()
+                }} status={filter == 'ALL' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="ALL" />
+                <Button onPress={() => {
+                  // setCar([]);
+                  setFilter('SUV')
+                  fetchSUV();
+                  // onRefresh()
+                  // onRefresh()
+                }} status={filter == 'SUV' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="SUV" />
+                <Button onPress={() => {
+                  setFilter('MPV')
+                  fetchMPV();
+                  // fetchCategory()
+                  // onRefresh()
+                }} status={filter == 'MPV' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="MPV" />
+              </View>
+              <SafeAreaView style={{ flex: 0 }}>
+                <FlatList
+                  data={car}
+                  renderItem={renderCarItem}
+                  keyExtractor={(item) => item.id}
+                  showsVerticalScrollIndicator={false}
+                // scrollEnabled={false}
+
+                />
+                <Modal
+                  visible={modalVisible}
+                  animationType="slide"
+                  transparent={true}
+                  onRequestClose={closeModal}
+                ><View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                      <Image style={{ width: 300, height: 200 }} source={{ uri: detail.image_url }} />
+                      <Text>{detail ? detail.car_name : ''}</Text>
+                      <View style={styles.containerBtn}>
+                        <Button
+                          status="success"
+                          text="Order"
+                          style={styles.btn}
+                          onPress={closeModal}
+                        />
+                        <Button
+                          status="danger"
+                          text="Close"
+                          style={styles.btn}
+                          onPress={closeModal}
+                        />
+                      </View>
                     </View>
                   </View>
-                </View>
-              </Modal>
-            </SafeAreaView>
+                </Modal>
+              </SafeAreaView>
 
-            {/* <Button
+              {/* <Button
               text="Go to second screen"
               onPress={() => {
                 navigation.navigate("Details");
@@ -557,15 +585,30 @@ export default function ({ navigation }) {
                 marginTop: 10,
               }}
             /> */}
-            {/* Tambahkan lebih banyak card sesuai kebutuhan */}
-            {/* <View style={styles.footer}>
+              {/* Tambahkan lebih banyak card sesuai kebutuhan */}
+              {/* <View style={styles.footer}>
               <TouchableOpacity style={styles.footerButton} size="sm">
                 <Text style={styles.footerButtonText}>Ini Footer</Text>
               </TouchableOpacity>
             </View> */}
-          </View>
-        }
-      />
+            </View>
+
+          }
+        />
+        <TouchableOpacity style={{
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+          width: 60,
+          height: 60,
+          borderRadius: 25,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#25D366'
+        }}>
+          <Ionicons style={{}} name="logo-whatsapp" size={40} color={'white'} onPress={() => Linking.openURL('https://wa.me/6282284924141')} />
+        </TouchableOpacity>
+      {/* </ImageBackground> */}
     </Layout >
   );
 }

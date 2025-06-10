@@ -2,7 +2,8 @@ import React from "react";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { AuthProvider } from "./src/provider/AuthProvider";
 import { ThemeProvider } from "react-native-rapi-ui";
-import { LogBox } from "react-native";
+import { ImageBackground, View, Text, LogBox } from "react-native";
+import * as SplashScreen from 'expo-splash-screen';
 import Loading from "./src/screens/utils/Loading";
 
 
@@ -30,6 +31,14 @@ export default function App(props) {
     //   // setFontsLoaded(true);
     // }
     // load();
+    const prepare = async () => {
+      // Lakukan tugas asinkron di sini
+      await new Promise(resolve => setTimeout(resolve, 10000)); // contoh: tunggu 2 detik
+
+      // Sembunyikan splash screen setelah tugas selesai
+      await SplashScreen.hideAsync();
+    };
+    prepare();
     LogBox.ignoreLogs([
       "AsyncStorage has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. See https://github.com/react-native-async-storage/async-storage",
       "Warning: Unknown: Support for defaultProps will be removed from memo components in a future major release. Use JavaScript default parameters instead."

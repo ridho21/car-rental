@@ -4,9 +4,9 @@
     "slug": "rent-car",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon_apk.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo-about.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

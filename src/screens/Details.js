@@ -75,7 +75,7 @@ export default function ({ navigation, route }) {
           }}
         >
           <Image style={{ width: '98%', aspectRatio: 1.5 }} source={{ uri: car.image_url }} />
-          <Text fontWeight="bold" style={{ fontSize: 25, marginTop: 20 }}>{car.stock > 0 ? "Availabel" : "Out Of Stock"}</Text>
+          <Text fontWeight="bold" style={{ fontSize: 25, marginTop: 20 }}>{car.stock > 0 ? "Available" : "Out Of Stock"}</Text>
           <View style={{ backgroundColor: 'black', width: '100%',borderRadius: 20, marginTop: '8%' }}>
             <Text fontWeight="bold" style={{ color: 'white', margin: '3%', fontSize: 25, textAlign: 'center' }}>{car.brand} | {car.car_name}</Text>
             <Text numberOfLines={5} style={{ alignItems: 'center', color: 'white', textAlign: 'justify', marginHorizontal: '5%' }}>{car.description}</Text>

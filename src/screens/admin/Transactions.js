@@ -29,6 +29,9 @@ const styles = StyleSheet.create({
 		padding: 2,
 		// marginLeft: '70%'
 	},
+	button: {
+		margin: 3
+	},
 	card: {
 		flex: 0,
 		padding: 16,
@@ -72,11 +75,10 @@ const styles = StyleSheet.create({
 export default function ({ navigation }) {
 	const { isDarkmode, setTheme } = useTheme();
 	const [refreshing, setRefreshing] = React.useState(false);
+	const [filter, setFilter] = React.useState('ALL');
 	const [order, setOrder] = React.useState([]);
-	// const docRef = doc(FIRESTORE_DB, "car-rental", "03vH6Kc69575t3iaYmMQ");
-	// const docSnap = getDoc(docRef);
+	const [search, setSearch] = React.useState('');
 	const [car, setCar] = React.useState([]);
-	// const [data, setData] = React.useState([]);
 
 	const completeOrder = async (documentId, status) => {
 		if (status == 'PAID') {
@@ -120,16 +122,61 @@ export default function ({ navigation }) {
 		}
 	};
 
+	const fetchDone = async () => {
+		const ref = collection(FIRESTORE_DB, "order");
+		const q = query(ref, where("status", "==", 'DONE'))
+		const snap = await getDocs(q);
+		const item = [];
+		snap.forEach((doc) => {
+			item.push({ id: doc.id, ...doc.data() });
+		});
+		setOrder(item);
+	};
+	const fetchPaid = async () => {
+		const ref = collection(FIRESTORE_DB, "order");
+		const q = query(ref, where("status", "==", 'PAID'))
+		const snap = await getDocs(q);
+		const item = [];
+		snap.forEach((doc) => {
+			item.push({ id: doc.id, ...doc.data() });
+		});
+		setOrder(item);
+	};
+	const fetchUnpaid = async () => {
+		const ref = collection(FIRESTORE_DB, "order");
+		const q = query(ref, where("status", "==", 'UNPAID'))
+		const snap = await getDocs(q);
+		const item = [];
+		snap.forEach((doc) => {
+			item.push({ id: doc.id, ...doc.data() });
+		});
+		setOrder(item);
+	};
+
 	const fetchPost = async () => {
 		const ref = collection(FIRESTORE_DB, 'order');
-		// const q = query(ref, where('user_id', '==', auth.currentUser.uid))
-		// const querySnapshot = await getDocs(q)
 		await getDocs(ref)
 			.then((querySnapshot) => {
 				const newData = querySnapshot.docs
 					.map((doc) => ({ id: doc.id, ...doc.data() }));
 				setOrder(newData);
 			});
+	};
+
+	const searchData = async () => {
+		const ref = collection(FIRESTORE_DB, "order");
+		const q = query(ref, where("customer_name", ">=", search), where("customer_name", "<=", search + '\uf8ff'))
+		const snap = await getDocs(q);
+		const item = [];
+		if (search.length > 0) {
+			snap.forEach((doc) => {
+				item.push({ id: doc.id, ...doc.data() });
+				console.log(doc.id, " => ", doc.data());
+			});
+			setOrder(item);
+		} else {
+			fetchPost();
+		}
 	};
 
 	const onRefresh = React.useCallback(() => {
@@ -191,7 +238,8 @@ export default function ({ navigation }) {
 
 	useEffect(() => {
 		fetchPost();
-	}, []);
+		searchData();
+	}, [search]);
 
 	return (
 		<Layout>
@@ -233,10 +281,43 @@ export default function ({ navigation }) {
 				<FlatList
 					data={order}
 					renderItem={renderCarItem}
+					initialNumToRender={5}
+					maxToRenderPerBatch={5}
 					showsVerticalScrollIndicator={false}
 					keyExtractor={(item) => item.id}
 					refreshControl={
 						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+					}
+					ListHeaderComponent={
+						<View style={{ padding: 15 }}>
+							<TextInput
+								placeholder="Search"
+								value={search}
+								onChangeText={(val) => setSearch(val)}
+								rightContent={
+									<Ionicons name="search-outline" size={25} color={'grey'} />
+								}
+							/>
+							<View style={{ display: 'flex', flexDirection: 'row', marginTop: '2%' }}>
+								<Button onPress={() => {
+									setFilter('ALL')
+									fetchPost()
+								}} status={filter == 'ALL' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="ALL" />
+								<Button onPress={() => {
+									setFilter('DONE')
+									fetchDone();
+								}} status={filter == 'DONE' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="DONE" />
+								<Button onPress={() => {
+									setFilter('PAID')
+									fetchPaid();
+								}} status={filter == 'PAID' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="PAID" />
+								<Button onPress={() => {
+									setFilter('UNPAID')
+									fetchUnpaid();
+								}} status={filter == 'UNPAID' ? 'danger' : 'dark100'} style={styles.button} size="sm" text="UNPAID" />
+							</View>
+						</View>
+
 					}
 				/>
 			</View>
